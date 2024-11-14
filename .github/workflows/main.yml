@@ -1,6 +1,6 @@
 on:
   push:
-    branches: []
+    branches: [feature/Configure-yaml-pipeline]
 
 jobs:
   ci:
@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: 3.12
           run: |
-                python pip install -r requirements.txt
+                python pip install -r HolidayBookingApp/requirements.txt
       - name: Set up database
         env:
           name: ${{secrets.DATABASE_NAME}}
@@ -22,7 +22,7 @@ jobs:
           password: ${{secrets.DATABASE_PASSWORD}}
           port: ${{secrets.DATABASE_PORT}}
         run: |
-              python SetupPostgreSQLDatabase.py "$name" "$host" "$user" "$password" "$port"   
+              python HolidayBookingApp/SetupPostgreSQLDatabase.py "$name" "$host" "$user" "$password" "$port"   
       - name: Deploy
         env:
           url: 
