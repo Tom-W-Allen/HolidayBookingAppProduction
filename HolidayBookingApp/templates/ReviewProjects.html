@@ -1,0 +1,142 @@
+{% extends "Home.html" %}
+{% block content %}
+<div>
+    <h1 class="page_title">Select Project:</h1>
+    <form method="POST">
+        <select name="selected project">
+            {% if selected_project.project_id == 0 %}
+                <option name="selected project" value="0" selected>Select</option>
+            {% else %}
+                <option name="selected project" value="0">Select</option>
+            {% endif %}
+            {% for project in project_list %}
+                {% if project.project_id == selected_project.project_id %}
+                    <option name="selected project" value="{{project.project_id}}" selected>
+                        {{project.project_name}}</option>
+                {% else %}
+                    <option name="selected project" value="{{project.project_id}}">
+                        {{project.project_name}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input type="submit" value="Review" class="filter_button">
+        <input type="hidden" name="form name" value="review">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+</div>
+<div class="project_grid_container">
+    <div class="project_title_grid_container">
+        <p class="title">Project Name</p>
+        <p class="title">Start Date</p>
+        <p class="title">End Date</p>
+        <p class="title">Members</p>
+    </div>
+    {% if account_type == 'admin' %}
+        <p class="title">Add Employees</p>
+    {% endif %}
+</div>
+<div class="project_grid_container">
+    <div class="project_title_grid_container">
+        <p class="title">{{selected_project.project_name}}</p>
+        {% if selected_project.project_id == 0 %}
+            <p class="title">--</p>
+            <p class="title">--</p>
+        {% else %}
+            <p class="title">{{selected_project.start_date.day}}-{{selected_project.start_date.month}}-{{selected_project.start_date.year}}</p>
+            <p class="title">{{selected_project.end_date.day}}-{{selected_project.end_date.month}}-{{selected_project.end_date.year}}</p>
+        {% endif %}
+        <p class="title">{{enrolled_employees|length}}</p>
+    </div>
+    {% if account_type != 'basic' %}
+        <form method="POST" class="add_employee_form_container">
+            <select required class="option" name="selected employee">
+                {% if selected_employee_id == 0 %}
+                    <option class="option" value="0" selected>Select</option>
+                {% else %}
+                    <option class="option" value="0">Select</option>
+                {% endif %}
+                {% for employee in available_employees %}
+                    {% if employee.user_id == selected_employee_id %}
+                        <option name="new employee" value="{{employee.user_id}}" class="option" selected>
+                            {{employee.first_name}} {{employee.surname}} ({{employee.user_name}})</option>
+                    {% else %}
+                        <option name="new employee" value="{{employee.user_id}}" class="option">
+                            {{employee.first_name}} {{employee.surname}} ({{employee.user_name}})</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <div class="employee_add_button_container">
+                {% if selected_project.project_id == 0 %}
+                    <input type="submit" value="Add" class="add_button" name="choice" disabled>
+                    <input type="submit" value="Cancel" class="cancel_button" name="choice" disabled>
+                {% else %}
+                    <input type="submit" value="Add" class="add_button" name="choice">
+                    {% if add_employee_button_presses == 1 %}
+                        <input type="submit" value="Cancel" class="cancel_button" name="choice">
+                    {% else %}
+                        <input type="submit" value="Cancel" class="cancel_button" name="choice" disabled>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <input type="hidden" name="button presses" value="{{(add_employee_button_presses + 1)}}">
+            <input type="hidden" name="selected project" value="{{selected_project.project_id}}" >
+            <input type="hidden" name="form name" value="add employee">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+    {% endif %}
+</div>
+{% if state == 'State.Warning' %}
+    <div class="information">
+        <p>{{message}}</p>
+    </div>
+{% elif state == 'State.Information' %}
+    <div class="confirmation">
+        <p>{{message}}</p>
+    </div>
+{% else %}
+    <div class="no_information">
+        <p>.</p>
+    </div>
+{% endif %}
+<h2 class="list_title">Enrolled Employees</h2>
+<div class="project_grid_container">
+    <div class="project_title_grid_container">
+        <p class="title">Username</p>
+        <p class="title">First Name</p>
+        <p class="title">Surname</p>
+        <p class="title">Holidays during project</p>
+    </div>
+</div>
+{% for employee in enrolled_employees %}
+    <div class="project_grid_container">
+        <div class="project_container">
+            <p class="request">{{employee.user_name}}</p>
+            <p class="request">{{employee.first_name}}</p>
+            <p class="request">{{employee.surname}}</p>
+            <p class="request">{{employee.project_holidays|length}}</p>
+        </div>
+        {% if account_type == 'admin' %}
+            <form method="POST" class="single_button_container">
+                <input type="submit" value="Remove" name="choice" class="rejection_button">
+                <input type="hidden" value="{{selected_project.project_id}}" name="selected project">
+                <input type="hidden" value="{{employee.user_id}}" name="remove employee">
+                <input type="hidden" name="form name" value="confirm removal">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            </form>
+        {% endif %}
+    </div>
+    {% if account_type == 'admin' and remove_employee == employee.user_id %}
+        <div class="confirmation_grid_container">
+            <p>Please confirm:</p>
+            <form class="confirmation_buttons_container" method="POST">
+                <input class="rejection_button" type="submit" name="choice" value="Remove">
+                <input class="cancel_button" type="submit" name="choice" value="Cancel">
+                <input type="hidden" name="form name" value="remove employee">
+                <input type="hidden" name="remove employee" value="{{employee.user_id}}">
+                <input type="hidden" name="selected project" value="{{selected_project.project_id}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            </form>
+        </div>
+    {% endif %}
+{% endfor %}
+{% endblock %}

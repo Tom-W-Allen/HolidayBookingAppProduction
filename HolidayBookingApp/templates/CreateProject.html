@@ -1,0 +1,58 @@
+{% extends "Home.html" %}
+{% block content %}
+{% if state == 'State.Warning' %}
+    <div class="information">
+        <p>{{message}}</p>
+    </div>
+{% elif state == 'State.Success' %}
+    <div class="confirmation">
+        <p>{{message}}</p>
+    </div>
+{% elif state == 'State.Error' %}
+<div class="error">
+    <p>{{message}}</p>
+</div>
+{% else %}
+    <div class="no_information">
+        <p>.</p>
+    </div>
+{% endif %}
+<div class="basic_form_container">
+    <form method="POST" class="basic_form">
+        <p>
+            Project Name
+            <input type="text" name="Name" maxlength="50">
+        </p>
+        <p>
+            Project Start Date
+            <input type="date" name="Start Date">
+        </p>
+        <p>
+            Project End Date
+            <input type="date" name="End Date">
+        </p>
+        {% if manager_list|length > 0 %}
+        <p>
+            Project Lead
+            <select name="Manager">
+                {% for manager in manager_list %}
+                <option value="{{manager.user_id}}">{{manager.first_name}} {{manager.surname}} ({{manager.user_name}})</option>
+                {% endfor %}
+            </select>
+        </p>
+        {% else %}
+        <p>No managers available: Please add new managers to the system before continuing</p>
+        {% endif %}
+        {% if manager_list|length > 0 %}
+        <input type="submit" value="Create Project" class="filter_button">
+        {% else %}
+        <input type="submit" value="Create Project" disabled class="filter_button">
+        {% endif %}
+        <input type="hidden" name="form name" value="create project">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+</div>
+{% endblock %}
+{% if state != 'State.Normal' %}
+    <p>{{ message }}</p>
+{% endif %}

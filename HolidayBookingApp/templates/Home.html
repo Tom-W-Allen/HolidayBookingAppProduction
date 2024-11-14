@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Holiday Booking Application</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="body">
+    <div class="navbar_container">
+        <div class="topnav">
+            {% if current_page == 'home' %}
+                <a href="{{ url_for('home_blueprint.home_page') }}" class="selected_nav_item">Home</a>
+            {% else %}
+                <a href="{{ url_for('home_blueprint.home_page') }}" class="nav_item">Home</a>
+            {% endif %}
+            {% if account_type != 'manager' %}
+                {% if current_page == 'request' %}
+                    <a href="{{ url_for('request_blueprint.request_holiday') }}" class="selected_nav_item">Request</a>
+                {% else %}
+                    <a href="{{ url_for('request_blueprint.request_holiday') }}" class="nav_item">Request</a>
+                {% endif %}
+            {% endif %}
+            {% if account_type != 'basic' %}
+                {% if current_page == 'approve' %}
+                    <a href="{{ url_for('approve_blueprint.approve_holiday') }}" class="selected_nav_item">Approve</a>
+                {% else %}
+                    <a href="{{ url_for('approve_blueprint.approve_holiday') }}" class="nav_item">Approve</a>
+                {% endif %}
+                {% if current_page == 'create project' %}
+                    <a href="{{ url_for('create_project_blueprint.create_project') }}" class="selected_nav_item">Create Projects</a>
+                {% else %}
+                    <a href="{{ url_for('create_project_blueprint.create_project') }}" class="nav_item">Create Projects</a>
+                {% endif %}
+            {% endif %}
+            {% if current_page == 'review projects' %}
+                <a href="{{ url_for('project_review_blueprint.review_projects') }}" class="selected_nav_item">Review Projects</a>
+            {% else %}
+                <a href="{{ url_for('project_review_blueprint.review_projects') }}" class="nav_item">Review Projects</a>
+            {% endif %}
+            {% if current_page == 'edit profile' %}
+                <a href="{{ url_for('edit_profile_blueprint.edit_profile') }}" class="selected_nav_item rounded">Edit Profile</a>
+            {% else %}
+                <a href="{{ url_for('edit_profile_blueprint.edit_profile') }}" class="nav_item rounded">Edit Profile</a>
+            {% endif %}
+        </div>
+        <form method="POST">
+            <input type="submit" value="Log out" class="submit_request_button">
+            <input type="hidden" name="logout presses" value="{{logout_presses + 1}}">
+            <input type="hidden" name="form name" value="log out">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+    </div>
+    {% if logout_presses == 1 %}
+    <div class="information">
+        <p class="warning">Are you sure you want to log out? Press again to confirm.</p>
+    </div>
+    {% endif %}
+    <div class="margin">
+        {% block content %}
+            <h1 class="title">Welcome back, {{user_details.first_name}}</h1>
+            {% if account_type == "admin" %}
+            <div class="home_page_flex">
+                <div class="flex_item">
+                    <p class="home_title">Total Projects</p>
+                    <p class="home_figure">{{total_projects}}</p>
+                </div>
+                <div class="flex_item">
+                    <p class="home_title">Total Users</p>
+                    <p class="home_figure">{{total_users}}</p>
+                </div>
+                <div class="flex_item">
+                    <p class="home_title">Rejected Requests</p>
+                    <p class="home_figure">{{rejected_requests}}</p>
+                </div>
+                <div class="flex_item">
+                    <p class="home_title">Cancelled Requests</p>
+                    <p class="home_figure">{{cancelled_requests}}</p>
+                </div>
+                <div class="flex_item">
+                    <p class="home_title">Pending Requests</p>
+                    <p class="home_figure">{{pending_requests}}</p>
+                </div>
+                <div class="flex_item">
+                    <p class="home_title">Approved Requests</p>
+                    <p class="home_figure">{{approved_requests}}</p>
+                </div>  
+            </div>         
+            {% elif account_type == "manager" %}
+                <div class="home_page_flex">
+                    <div class="flex_item">
+                        <p class="home_title">Total Projects</p>
+                        <p class="home_figure">{{total_projects}}</p>
+                    </div>
+                    <div class="flex_item">
+                        <p class="home_title">Pending Requests</p>
+                        <p class="home_figure">{{pending_requests}}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="home_page_flex">
+                    <div class="flex_item">
+                        <p class="home_title">Total Projects</p>
+                        <p class="home_figure">{{total_projects}}</p>
+                    </div>
+                    <div class="flex_item">
+                        <p class="home_title">Pending Requests</p>
+                        <p class="home_figure">{{pending_requests}}</p>
+                    </div>
+                    {% if upcoming_holidays|length > 0 %}
+                        <div class="upcoming_holidays">
+                            <p class="home_title">Upcoming Holidays:</p>
+                            {% if upcoming_holidays|length <= 4 %}
+                                {% for holiday in upcoming_holidays %}
+                                    <p class="holiday">
+                                        {{holiday.start_date.day}}/{{holiday.start_date.month}}/{{holiday.start_date.year}}  -  {{holiday.end_date.day}}/{{holiday.end_date.month}}/{{holiday.end_date.year}}</p>
+                                {% endfor %}
+                            {% else %}
+                                {% for index in [0, 1, 2, 3] %}
+                                    <p class="holiday">{{upcoming_holidays[index].start_date.day}}/{{upcoming_holidays[index].start_date.month}}/{{upcoming_holidays[index].start_date.year}}  -  {{upcoming_holidays[index].end_date.day}}/{{upcoming_holidays[index].end_date.month}}/{{upcoming_holidays[index].end_date.year}}</p>
+                                {% endfor %}
+                            {% endif %}
+                            {% if upcoming_holidays|length > 4 %}
+                                <p class="title">Continued...</p>
+                            {% endif %}
+                        </div>
+                {% endif %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
+</body>
+</html>

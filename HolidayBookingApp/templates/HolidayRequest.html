@@ -1,0 +1,162 @@
+{% extends "Home.html" %}
+{% block content %}
+{% if account_type == 'admin' %}
+<form method="POST">
+    {% if selected_dates %}
+    <select name="filter" disabled>
+        {% if user_id == '' %}
+        <option selected name="filter" value="--">Select</option>
+        {% else %}
+        <option name="filter" value="--">Select</option>
+        {% endif %}
+        {% for user in basic_users %}
+        {% if user.user_id == user_id %}
+        <option name="filter" value="{{user.user_id}}" selected>{{user.first_name}} {{user.surname}} ({{user.user_name}})</option>
+        {% else %}
+        <option name="filter" value="{{user.user_id}}">{{user.first_name}} {{user.surname}} ({{user.user_name}})</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <input type="submit" value="Select" disabled  class="filter_button">
+    {% else %}
+    <select name="filter">
+        {% if user_id == '' %}
+        <option selected name="filter" value="--">Select</option>
+        {% else %}
+        <option name="filter" value="--">Select</option>
+        {% endif %}
+        {% for user in basic_users %}
+        {% if user.user_id == user_id %}
+        <option name="filter" value="{{user.user_id}}" selected>{{user.first_name}} {{user.surname}} ({{user.user_name}})</option>
+        {% else %}
+        <option name="filter" value="{{user.user_id}}">{{user.first_name}} {{user.surname}} ({{user.user_name}})</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <input type="submit" value="Select" class="filter_button">
+    {% endif %}
+    <input type="hidden" name="form name" value="user selection">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+</form>
+{% endif %}
+{% if manager == None and account_type != 'admin' %}
+    <h2 class="title">Approver not yet assigned, please go to <a href="{{ url_for('edit_profile_blueprint.edit_profile') }}">edit profile</a> and update your manager.</h2>
+{% else %}
+    <h2 class="title">Make a Holiday Request</h2>
+    <div class="request_form_container">
+        <form method="POST" class="request_form">
+            {% if selected_dates %}
+                <p class="start_date">
+                    Start Date
+                    <input type = "date" name = "Start Date" value="{{selected_dates.start_date}}">
+                </p>
+                <p class="end_date">
+                    End Date
+                    <input type = "date" name = "End Date" value="{{selected_dates.end_date}}">
+                </p>
+            {% else %}
+                <p class="start_date">
+                    Start Date
+                    <input type = "date" name = "Start Date">
+                </p>
+                <p class="end_date">
+                    End Date
+                    <input type = "date" name = "End Date">
+                </p>
+            {% endif %}
+                <p class="holiday_status">Remaining Holidays: {{remaining_holidays}} ({{pending_holidays}} pending approval)</p>
+            {% if account_type == 'admin' %}
+                <input type="hidden" name="Selected User" value="{{user_id}}">
+            {% endif %}
+            <input type="submit" class="submit_request_button">
+            <input type="hidden" name="form name" value="date selection">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+    </div>
+    {% if selected_dates %}
+    <div>
+        <form method="POST" class="two_button_container">
+            <input type="submit" name="choice" value="Confirm" class="approval_button">
+            <input type="submit" name="choice" value="Cancel" class="cancel_button">
+            <input type="hidden" value="{{selected_dates.start_date}}" name="Start Date">
+            <input type="hidden" value="{{selected_dates.end_date}}" name="End Date">
+            <input type="hidden" name="Confirmation Required" value="false">
+            {% if account_type == 'admin' %}
+            <input type="hidden" name="Selected User" value="{{user_id}}">
+            {% endif %}
+            <input type="hidden" name="form name" value="date confirmation">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+    </div>
+    {% endif %}
+    {% if state == 'State.Warning' %}
+        <div class="information">
+            <p>{{message}}</p>
+        </div>
+    {% elif state == 'State.Success' %}
+        <div class="confirmation">
+            <p>{{message}}</p>
+        </div>
+    {% elif state == 'State.Error' %}
+    <div class="error">
+        <p>{{message}}</p>
+    </div>
+    {% else %}
+        <div class="no_information">
+            <p>.</p>
+        </div>
+    {% endif %}
+    <h2 class="title">Request History</h2>
+    {% if request_list|length > 0 %}
+    <div class="title_grid_container">
+        <p class="title">Approver First Name</p>
+        <p class="title">Approver Surname</p>
+        <p class="title">Start Date</p>
+        <p class="title">End Date</p>
+        <p class="title">Total Holidays</p>
+        <p class="title">Status</p>
+    </div>
+    {% for request in request_list %}
+    <div class="request_grid_container">
+        <div class="request_container">
+            <p class="request">{{request.first_name}}</p>
+            <p class="request">{{request.surname}}</p>
+            <p class="request">{{request.start_date.day}}/{{request.start_date.month}}/{{request.start_date.year}}</p>
+            <p class="request">{{request.end_date.day}}/{{request.end_date.month}}/{{request.end_date.year}}</p>
+            <p class="request">{{request.total_holidays}}</p>
+            <p class="request">{{request.status}}</p>
+        </div>
+        {% if request.status == 'pending' %}
+            <div class="approval_button_container">
+                <form class="approval_form" method="POST">
+                    <input class="rejection_button" type="submit" name="choice" value="Cancel">
+                    <input type="hidden" name="id" value="{{request.id}}">
+                    <input type="hidden" name="form name" value="confirm cancel">
+                    {% if account_type == 'admin' %}
+                        <input type="hidden" name="Selected User" value="{{user_id}}">
+                    {% endif %}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    {% if approval_required == request.id %}
+    <div class="confirmation_grid_container">
+        <p>Please confirm:</p>
+        <form class="confirmation_buttons_container" method="POST">
+            <input class="rejection_button" type="submit" name="choice" value="Cancel">
+            <input type="hidden" name="form name" value="cancel request">
+            <input type="hidden" name="id" value="{{request.id}}">
+            {% if account_type == 'admin' %}
+                <input type="hidden" name="Selected User" value="{{user_id}}">
+            {% endif %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </form>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    <div class="title margin_top">There are currently no holiday requests to review</div>
+    {% endif %}
+{% endif %}
+{% endblock %}

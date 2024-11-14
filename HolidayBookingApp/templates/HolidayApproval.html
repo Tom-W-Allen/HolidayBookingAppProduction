@@ -1,0 +1,97 @@
+{% extends "Home.html" %}
+{% block content %}
+{% if account_type == 'admin' %}
+<form method="POST">
+    <select name="filter">
+        {% if selected_user == 0 %}
+            <option name="filter" value="0" selected>Select</option>
+        {% else %}
+            <option name="filter" value="0">Select</option>
+        {% endif %}
+        {% for employee in employee_list %}
+            {% if selected_user == employee.user_id %}
+                <option name="filter" value="{{employee.user_id}}" selected>{{employee.first_name}} {{employee.surname}} ({{employee.user_name}})</option>
+            {% else %}
+                <option name="filter" value="{{employee.user_id}}">{{employee.first_name}} {{employee.surname}} ({{employee.user_name}})</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <input type="submit" value="Select" class="filter_button">
+    <input type="hidden" name="form name" value="user selection">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+</form>
+{% endif %}
+{% if state == 'State.Warning' %}
+    <div class="information">
+        <p>{{message}}</p>
+    </div>
+{% elif state == 'State.Success' %}
+    <div class="confirmation">
+        <p>{{message}}</p>
+    </div>
+{% elif state == 'State.Error' %}
+<div class="error">
+    <p>{{message}}</p>
+</div>
+{% else %}
+    <div class="no_information">
+        <p>.</p>
+    </div>
+{% endif %}
+{% if request_list|length > 0 %}
+<div class="approve_title_grid_container">
+    {% if account_type == 'admin' %}
+        <p class="title">Manager First Name</p>
+    {% else %}
+        <p class="title">First Name</p>
+    {% endif %}
+    {% if account_type == 'admin' %}
+        <p class="title">Manager Surname</p>
+    {% else %}
+        <p class="title">Surname</p>
+    {% endif %}
+    <p class="title">Start Date</p>
+    <p class="title">End Date</p>
+    <p class="title">Total Holidays</p>
+</div>
+{% for request in request_list %}
+    <div class="request_grid_container">
+        <div class="approve_container">
+            <p class="request">{{request.first_name}}</p>
+            <p class="request">{{request.surname}}</p>
+            <p class="request">{{request.start_date.day}}/{{request.start_date.month}}/{{request.start_date.year}}</p>
+            <p class="request">{{request.end_date.day}}/{{request.end_date.month}}/{{request.end_date.year}}</p>
+            <p class="request">{{request.total_holidays}}</p>
+        </div>
+        <div class="approval_button_container">
+            <form class="approval_form" method="POST">
+                <input class="approval_button" type="submit" name="choice" value="Approve">
+                <input class="rejection_button" type="submit" name="choice" value="Reject">
+                <input type="hidden" name="request id" value="{{request.id}}">
+                <input type="hidden" name="form name" value="confirm approve or reject">
+                <input type="hidden" name="selected user" value="{{selected_user}}">
+            </form>
+        </div>
+    </div>
+    {% if approval_required == request.id %}
+        <div class="confirmation_grid_container">
+            <p>Please confirm:</p>
+            <form class="confirmation_buttons_container" method="POST">
+                {% if approval_state == "Approve" %}
+                    <input class="approval_button" type="submit" name="choice" value="Approve">
+                    <input class="cancel_button" type="submit" name="choice" value="Cancel">
+                {% else %}
+                    <input class="rejection_button" type="submit" name="choice" value="Reject">
+                    <input class="cancel_button" type="submit" name="choice" value="Cancel">
+                {% endif %}
+                <input type="hidden" name="form name" value="approve or reject request">
+                <input type="hidden" name="request id" value="{{request.id}}">
+                <input type="hidden" name="selected user" value="{{selected_user}}">
+            </form>
+        </div>
+    {% endif %}
+{% endfor %}
+{% else %}
+<div class="title margin_top">There are currently no holiday requests that require approval</div>
+{% endif %}
+{% endblock %}
