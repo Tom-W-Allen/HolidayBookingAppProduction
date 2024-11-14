@@ -20,8 +20,8 @@ jobs:
         with:
           python-version: 3.12
           run: |
-                python pip -m install -r HolidayBookingApp/requirements.txt
-                python HolidayBookingApp/SetupPostgreSQLDatabase.py "$name" "$host" "$user" "$password" "$port"                 
+            python pip -m install -r HolidayBookingApp/requirements.txt
+            python HolidayBookingApp/SetupPostgreSQLDatabase.py "$name" "$host" "$user" "$password" "$port"                 
       - name: Deploy
         env:
           url: 
