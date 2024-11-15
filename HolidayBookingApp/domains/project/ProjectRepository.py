@@ -8,6 +8,8 @@ from domains.project.models.ProjectMember import ProjectMember
 from domains.project.ProjectRepositoryInterface import IProjectRepository
 from persistence.Database import Database
 
+from common.DateFunctions import format_database_date
+
 
 class ProjectRepository(IProjectRepository):
     def __init__(self, connection_string: str, database: Database):
@@ -31,8 +33,8 @@ class ProjectRepository(IProjectRepository):
             message = "Please select a date from both fields."
             return ProjectValidationDetails(state, message)
 
-        converted_start_date = datetime.strptime(start_date, "%Y-%m-%d")
-        converted_end_date = datetime.strptime(end_date, "%Y-%m-%d")
+        converted_start_date = format_database_date(start_date)
+        converted_end_date = format_database_date(end_date)
 
         today = datetime(date.today().year, date.today().month, date.today().day)
 
@@ -97,8 +99,8 @@ class ProjectRepository(IProjectRepository):
 
         project_list = []
         for i in range(0, len(projects)):
-            converted_start_date = datetime.strptime(projects[i][2], "%Y-%m-%d")
-            converted_end_date = datetime.strptime(projects[i][3], "%Y-%m-%d")
+            converted_start_date = format_database_date(projects[i][2])
+            converted_end_date = format_database_date(projects[i][3])
 
             project_list.append(Project(projects[i][0],
                                         projects[i][1],
@@ -117,8 +119,8 @@ class ProjectRepository(IProjectRepository):
 
         project_list = []
         for i in range(0, len(projects)):
-            converted_start_date = datetime.strptime(projects[i][2], "%Y-%m-%d")
-            converted_end_date = datetime.strptime(projects[i][3], "%Y-%m-%d")
+            converted_start_date = format_database_date(projects[i][2])
+            converted_end_date = format_database_date(projects[i][3])
 
             project_list.append(Project(projects[i][0],
                                         projects[i][1],
@@ -146,8 +148,8 @@ class ProjectRepository(IProjectRepository):
 
         project_list = []
         for i in range(0, len(projects)):
-            converted_start_date = datetime.strptime(projects[i][2], "%Y-%m-%d")
-            converted_end_date = datetime.strptime(projects[i][3], "%Y-%m-%d")
+            converted_start_date = format_database_date(projects[i][2])
+            converted_end_date = format_database_date(projects[i][3])
 
             project_list.append(Project(projects[i][0],
                                         projects[i][1],
@@ -285,8 +287,8 @@ class ProjectRepository(IProjectRepository):
                                                       "project_id = ? LIMIT 1",
                                                       arguments=[str(project_id)])
 
-        converted_project_start_date = datetime.strptime(project_dates[0][0], "%Y-%m-%d")
-        converted_project_end_date = datetime.strptime(project_dates[0][1], "%Y-%m-%d")
+        converted_project_start_date = format_database_date(project_dates[0][0])
+        converted_project_end_date = format_database_date(project_dates[0][1])
 
         approved_holidays = self._database.query_database("SELECT start_date, end_date "
                                                           "FROM requests "
@@ -296,8 +298,8 @@ class ProjectRepository(IProjectRepository):
         overlap_holidays = []
 
         for holiday_range in approved_holidays:
-            converted_start_date = datetime.strptime(holiday_range[0], "%Y-%m-%d")
-            converted_end_date = datetime.strptime(holiday_range[1], "%Y-%m-%d")
+            converted_start_date = format_database_date(holiday_range[0])
+            converted_end_date = format_database_date(holiday_range[1])
 
             overlap_holidays.extend(find_overlapping_dates(converted_start_date,
                                                            converted_end_date,
