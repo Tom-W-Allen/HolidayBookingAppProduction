@@ -10,7 +10,7 @@ request_blueprint = Blueprint('request_blueprint', __name__)
 
 connection_string = "persistence/HolidayBookingDatabase.db"
 
-database = get_database(True)
+database = get_database()
 
 request_repository = RequestRepository(database)
 user_repository = UserRepository(database)

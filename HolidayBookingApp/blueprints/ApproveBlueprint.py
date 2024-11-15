@@ -8,7 +8,7 @@ from persistence.DatabaseFactory import get_database
 
 approve_blueprint = Blueprint('approve_blueprint', __name__)
 
-database = get_database(True)
+database = get_database()
 
 request_repository = RequestRepository(database)
 user_repository = UserRepository(database)
