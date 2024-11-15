@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 def get_valid_weekdays(start_date: datetime, end_date: datetime) -> "list[datetime]":
@@ -30,3 +30,11 @@ def find_overlapping_dates(start_date: datetime,
         date_to_add += timedelta(1)
 
     return [x for x in date_list if comparison_start_date <= x <= comparison_end_date]
+
+def format_database_date(value):
+    if isinstance(value, date):
+        return datetime(value.year, value.month, value.day)
+    elif isinstance(value, str):
+        return datetime.strptime(value, "%Y-%m-%d")
+    else:
+        raise Exception("Unrecognised date format")
