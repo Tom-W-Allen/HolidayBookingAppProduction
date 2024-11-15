@@ -4,7 +4,7 @@ from persistence.Databases.SqliteDatabase import SqliteDatabase
 from persistence.Databases.PostgreSQLDatabase import PostgreSQLDatabase
 from dotenv import load_dotenv
 
-def get_database(variable):
+def get_database():
     load_dotenv()
 
     database_name = os.getenv("DATABASE_NAME")

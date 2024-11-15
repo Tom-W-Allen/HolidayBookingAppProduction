@@ -2,26 +2,10 @@ on:
   push:
     branches: [feature/Configure-yaml-pipeline]
 
-env:
-    name: ${{secrets.DATABASE_NAME}}
-    host: ${{secrets.DATABASE_HOST}}
-    user: ${{secrets.DATABASE_USER}}
-    password: ${{secrets.DATABASE_PASSWORD}}
-    port: ${{secrets.DATABASE_PORT}}
-    
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Application Code
-        uses: actions/checkout@v4
-      - name: Set up Application
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-          run: |
-            python pip -m install -r HolidayBookingApp/requirements.txt
-            python HolidayBookingApp/SetupPostgreSQLDatabase.py "$name" "$host" "$user" "$password" "$port"                 
       - name: Deploy
         env:
           url: 
