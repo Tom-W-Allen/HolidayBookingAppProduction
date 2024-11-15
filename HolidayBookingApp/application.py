@@ -36,7 +36,7 @@ application.register_blueprint(edit_profile_blueprint)
 login_manager.init_app(application)
 login_manager.login_view = 'login'
 
-database = get_database(True)
+database = get_database()
 
 user_repository = UserRepository(database)
 
