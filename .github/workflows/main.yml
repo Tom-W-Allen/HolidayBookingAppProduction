@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feature/Configure-yaml-pipeline]
+    branches: [main, develop]
 
 jobs:
   ci:
