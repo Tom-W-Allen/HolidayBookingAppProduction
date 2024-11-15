@@ -10,7 +10,7 @@ from persistence.DatabaseFactory import get_database
 home_blueprint = Blueprint('home_blueprint', __name__)
 connection_string = "persistence/HolidayBookingDatabase.db"
 
-database = get_database(True)
+database = get_database()
 
 user_repository = UserRepository(database)
 request_repository = RequestRepository(database)

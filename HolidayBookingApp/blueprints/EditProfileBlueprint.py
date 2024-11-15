@@ -11,7 +11,7 @@ edit_profile_blueprint = Blueprint('edit_profile_blueprint', __name__)
 
 connection_string = "persistence/HolidayBookingDatabase.db"
 
-database = get_database(True)
+database = get_database()
 
 user_repository = UserRepository(database)
 request_repository = RequestRepository(database)
