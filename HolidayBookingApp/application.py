@@ -11,6 +11,7 @@ from domains.user.UserRepository import UserRepository
 from mappers.LoginPageMapper import LoginPageMapper
 from persistence.CreateSqliteDatabase import set_up_sqlite_database
 from persistence.DatabaseFactory import get_database
+from persistence.SetupPostgreSQLDatabase import setup_postgresql_database
 
 from blueprints.HomeBlueprint import home_blueprint
 from blueprints.RequestBlueprint import request_blueprint
@@ -79,6 +80,8 @@ environment = getenv("ENVIRONMENT")
 if __name__ == '__main__':
     if environment == "Production" or environment == "Development":
         # Make available across all possible addresses when deployed on render
+        database = get_database()
+        setup_postgresql_database(database)
         serve(application, host='0.0.0.0', port=5000)
     else:
         # Make sure that Sqlite database is set up correctly with example data when run locally (but only if
