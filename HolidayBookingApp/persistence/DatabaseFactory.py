@@ -11,17 +11,18 @@ def get_database():
     host = os.getenv("HOST")
     user = os.getenv("USER")
     port = os.getenv("DATABASE_PORT")
+    password = os.getenv("DATABASE_PASSWORD")
 
 
-    if not valid_postgres_config(database_name, host, user, port):
+    if not valid_postgres_config(database_name, host, user, port, password):
         return SqliteDatabase("persistence/HolidayBookingDatabase.db")
     else:
         return PostgreSQLDatabase(database_name,
                                   host,
                                   user,
-                                  "", # Server uses an internal connection so no password
+                                  password,
                                   port)
 
 
-def valid_postgres_config(database_name, host, user, port):
-    return None not in [database_name, host, user, port]
+def valid_postgres_config(database_name, host, user, port, password):
+    return None not in [database_name, host, user, port, password]
