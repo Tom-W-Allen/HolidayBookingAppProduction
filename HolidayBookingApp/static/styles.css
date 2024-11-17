@@ -285,6 +285,16 @@
 }
 
 
+.forgotten_container{
+  display: grid;
+  font-family: Arial, Helvetica, sans-serif;
+  align-items: center;
+  margin-left: 30%;
+  margin-right: 30%;
+  height: 520px;
+  align-text: center
+}
+
 .login_container{
   display: grid;
   grid-template-columns: 49% 2% 49%;

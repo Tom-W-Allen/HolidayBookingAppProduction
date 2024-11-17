@@ -16,6 +16,7 @@
             <p class="login_content">Please enter your password:</p>
             <input type="password" name="Password" class="login_content">
             <input type="submit" value="Sign-in" class="login_button">
+            <a href="{{ url_for('forgotten_password_blueprint.send_email') }}">Forgotten your password?</a>
             <input type="hidden" name="form name" value="login">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         </form>
