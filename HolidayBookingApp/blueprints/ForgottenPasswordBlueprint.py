@@ -28,7 +28,7 @@ def send_email():
         else:
             match request.form["form name"]:
                 case "reset_password":
-                    page_data = forgotten_password_page_mapper.send_email()
+                    page_data = forgotten_password_page_mapper.map_send_email()
                 case _:
                     page_data = forgotten_password_page_mapper.map_error()
     except:

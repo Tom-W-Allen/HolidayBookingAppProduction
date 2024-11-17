@@ -17,15 +17,35 @@ class UserRepository(IUserRepository):
         super().__init__(database)
         self._database = database
 
+    def is_postgreSQL(self):
+        return self._database.type == "postgreSQL"
+
+    def reset_identifier_exists(self, identifier: str) -> bool:
+
+        records = self._database.query_database("SELECT * FROM users WHERE reset_identifier = ?",
+                                                arguments=[str(identifier)])
+
+        return len(records) > 0
+
+    def update_reset_identifier(self, identifier: str, user_id: int):
+
+        self._database.query_database("UPDATE users SET reset_identifier = ? WHERE user_id = ?",
+                                      arguments=
+                                        [str(identifier),
+                                         str(user_id)])
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
-                 surname: str, holidays: int, manager: Optional[int]):
+                 surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
 
         top_id = self._database.query_database("SELECT user_id FROM users ORDER BY user_id DESC",
                                                limit=1)
 
         record_id = 1 if len(top_id) < 1 else int(top_id[0][0]) + 1
 
-        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        # only store email addresses if they are going to the encrypted server
+        email_entry = email if self.is_postgreSQL() else None
+
+        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                       arguments=
                                         [str(record_id),
                                          str(username),
@@ -35,8 +55,17 @@ class UserRepository(IUserRepository):
                                          str(first_name),
                                          str(surname),
                                          str(manager) if manager is not None else manager,
+                                         email_entry,
+                                         None,
                                          str(holidays),
                                          str(0)]) # No password attempts yet as account was just created
+
+    def get_user_id_from_email(self, email_address: str) -> int:
+
+        user_id = self._database.query_database("SELECT user_id FROM users WHERE email_address = ?",
+                                                arguments=[str(email_address)])
+
+        return None if len(user_id) == 0 else int(user_id[0][0])
 
     def get_user_manager(self, user_id: int) -> int:
 
@@ -123,18 +152,23 @@ class UserRepository(IUserRepository):
         except ValueError:
             manager = 0
 
+        # only store email addresses if they are going to the encrypted server
+        email_entry = user.email if self.is_postgreSQL() else None
+
         current_details = self.get_public_user_details(user.user_id)
 
         self._database.query_database("UPDATE users SET "
                                       "first_name = ?, "
                                       "surname = ?, "
-                                      "manager = ? "
+                                      "manager = ?, "
+                                      "email_address = ? "
                                       "WHERE "
                                       "user_id = ?",
                                       arguments=
                                         [str(user.first_name),
                                          str(user.surname),
                                          str(manager) if manager > 0 else None,
+                                         email_entry,
                                          str(user.user_id)])
 
         # Need to hash password before updating table if it has been changed.

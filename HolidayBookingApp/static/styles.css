@@ -289,8 +289,8 @@
   display: grid;
   font-family: Arial, Helvetica, sans-serif;
   align-items: center;
-  margin-left: 30%;
-  margin-right: 30%;
+  margin-left: 25%;
+  margin-right: 25%;
   height: 520px;
   align-text: center
 }
@@ -562,6 +562,11 @@
 .basic_form_confirmation_container{
   text-align: center;
   font-family:Arial, Helvetica, sans-serif;
+}
+
+.spacing{
+  margin-right: 10%;
+  margin-left: 10%;
 }
 
 .basic_form{

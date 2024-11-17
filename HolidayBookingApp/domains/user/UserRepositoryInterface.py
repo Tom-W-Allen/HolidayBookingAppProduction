@@ -13,6 +13,18 @@ class IUserRepository:
     def __init__(self, database: Database):
         self._database = database
 
+    def is_postgreSQL(self):
+        pass
+
+    def reset_identifier_exists(self, identifier: str) -> bool:
+        pass
+
+    def get_user_id_from_email(self, email_address: str) -> int:
+        pass
+
+    def update_reset_identifier(self, identifier: str, user_id: int):
+        pass
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int]):
         pass

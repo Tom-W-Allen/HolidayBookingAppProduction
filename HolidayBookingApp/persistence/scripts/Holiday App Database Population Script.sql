@@ -1,14 +1,14 @@
 INSERT INTO users VALUES
-(1, 'JNic87', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Jim', 'Nicholson', 4, 20, 0),
-(2, 'Dev2024', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Sally', 'Smith', 4, 25, 0),
-(3, 'Doug_42', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Doug', 'Fletcher', 4, 19, 0),
-(4, 'TStev65', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'manager', 'Tim', 'Stevens', 0, 0, 0),
-(5, 'MW_Dev', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Mark', 'White', 7, 23, 0),
-(6, 'K_Dev', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Katie', 'Watts', 7, 16, 0),
-(7, 'Sarah_B', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'manager', 'Sarah', 'Black', 0, 0, 0),
-(8, 'Smithy_97', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Joe', 'Smith', 9, 25, 0),
-(9, 'AlexC_2', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'manager', 'Alex', 'Cameron', 0, 0, 0),
-(10, 'AStone_82', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'admin', 'Ashley', 'Stone', 0, 0, 0);
+(1, 'JNic87', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Jim', 'Nicholson', 4, NULL, NULL, 20, 0),
+(2, 'Dev2024', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Sally', 'Smith', NULL, NULL, 4, 25, 0),
+(3, 'Doug_42', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Doug', 'Fletcher', NULL, NULL, 4, 19, 0),
+(4, 'TStev65', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'manager', 'Tim', 'Stevens', NULL, NULL, 0, 0, 0),
+(5, 'MW_Dev', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Mark', 'White', 7, NULL, NULL, 23, 0),
+(6, 'K_Dev', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Katie', 'Watts', 7, NULL, NULL, 16, 0),
+(7, 'Sarah_B', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'manager', 'Sarah', 'Black', NULL, NULL, 0, 0, 0),
+(8, 'Smithy_97', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'basic', 'Joe', 'Smith', 9, NULL, NULL, 25, 0),
+(9, 'AlexC_2', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'manager', 'Alex', 'Cameron', NULL, NULL, 0, 0, 0),
+(10, 'AStone_82', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', NULL, 'admin', 'Ashley', 'Stone', NULL, NULL, 0, 0, 0);
 
 INSERT INTO requests VALUES
 (1, '2024-3-4', '2024-3-8', 1, 4, 'approved', 5),

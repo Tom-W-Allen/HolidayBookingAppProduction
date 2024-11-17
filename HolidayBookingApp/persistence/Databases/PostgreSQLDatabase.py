@@ -10,6 +10,7 @@ class PostgreSQLDatabase(Database):
         self.user = user
         self.password = password
         self.port = port
+        self.type = "postgreSQL"
 
     def _build_connection(self):
         return psycopg2.connect(database=self.database_name,

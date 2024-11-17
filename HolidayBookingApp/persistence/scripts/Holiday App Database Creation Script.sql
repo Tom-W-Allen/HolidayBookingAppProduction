@@ -13,6 +13,8 @@ CREATE TABLE users (
 	first_name VARCHAR(256) NOT NULL,
 	surname VARCHAR(256) NOT NULL,
 	manager VARCHAR(256),
+	email_address VARCHAR(256),
+	reset_identifier VARCHAR(256),
 	holidays_remaining INT NOT NULL,
 	password_attempts INT NOT NULL
 );
