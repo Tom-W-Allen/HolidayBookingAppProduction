@@ -34,6 +34,14 @@ class UserRepository(IUserRepository):
                                         [str(identifier),
                                          str(user_id)])
 
+    def update_reset_expiry(self, expiry_day: str, expiry_time: str, user_id: int):
+
+        self._database.query_database("UPDATE users SET reset_expiry_date = ?, reset_expiry_time = ? WHERE user_id = ?",
+                                      arguments=
+                                        [str(expiry_day),
+                                         str(expiry_time),
+                                         str(user_id)])
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
 

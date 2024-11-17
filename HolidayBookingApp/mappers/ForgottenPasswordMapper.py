@@ -8,7 +8,7 @@ from mappers.BaseMapper import BaseMapper
 from common.EmailFunctions import get_email_authentication_details, send_email
 import string
 import random
-
+import datetime
 
 class ForgottenPasswordMapper(BaseMapper):
     def __init__(self,
@@ -55,11 +55,18 @@ class ForgottenPasswordMapper(BaseMapper):
 
                 authentication = get_email_authentication_details()
 
-                email_message = ("You have received this email because a password reset was requested for you account, please use the link below: \n\n"
-                                 f"{authentication.server_url}/{url_identifier}\n\n"
+                email_message = ("You have received this email because a password reset was requested for your account, please use the link below: \n\n"
+                                 f"{authentication.server_url}/?reset={url_identifier}\n\n"
                                  f"If you did not request a reset, please ensure that your accounts are secure.")
 
                 send_email(email_message, request.form["Registered Password"], "Holiday Booking Application Password Reset", authentication)
+
+                expiry_date_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
+                expiry_date = f"{expiry_date_time.year}-{expiry_date_time.month}-{expiry_date_time.day}"
+                expiry_time = f"{expiry_date_time.hour}:{expiry_date_time.minute}:{expiry_date_time.second}"
+
+                self.user_repository.update_reset_expiry(expiry_date, expiry_time, int(user_id))
+
                 successful_request = True
 
         return ForgottenPasswordPageData(state,

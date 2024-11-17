@@ -25,6 +25,9 @@ class IUserRepository:
     def update_reset_identifier(self, identifier: str, user_id: int):
         pass
 
+    def update_reset_expiry(self, expiry_day: str, expiry_time: str, user_id: int):
+        pass
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int]):
         pass
