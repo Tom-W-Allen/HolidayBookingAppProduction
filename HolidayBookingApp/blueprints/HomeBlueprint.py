@@ -8,13 +8,11 @@ from mappers.HomePageMapper import HomePageMapper
 from persistence.DatabaseFactory import get_database
 
 home_blueprint = Blueprint('home_blueprint', __name__)
-connection_string = "persistence/HolidayBookingDatabase.db"
-
 database = get_database()
 
 user_repository = UserRepository(database)
 request_repository = RequestRepository(database)
-project_repository = ProjectRepository(connection_string, database)
+project_repository = ProjectRepository(database)
 
 home_page_mapper = HomePageMapper(user_repository, request_repository, project_repository)
 

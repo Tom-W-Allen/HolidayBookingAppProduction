@@ -7,11 +7,9 @@ from mappers.ReviewProjectPageMapper import ReviewProjectPageMapper
 from persistence.DatabaseFactory import get_database
 
 project_review_blueprint = Blueprint('project_review_blueprint', __name__)
-connection_string = "persistence/HolidayBookingDatabase.db"
-
 database = get_database()
 
-project_repository = ProjectRepository(connection_string, database)
+project_repository = ProjectRepository(database)
 user_repository = UserRepository(database)
 
 review_project_page_mapper = ReviewProjectPageMapper(project_repository)

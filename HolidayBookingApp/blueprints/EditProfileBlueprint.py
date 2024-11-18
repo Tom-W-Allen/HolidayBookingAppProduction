@@ -8,14 +8,11 @@ from domains.project.ProjectRepository import ProjectRepository
 from persistence.DatabaseFactory import get_database
 
 edit_profile_blueprint = Blueprint('edit_profile_blueprint', __name__)
-
-connection_string = "persistence/HolidayBookingDatabase.db"
-
 database = get_database()
 
 user_repository = UserRepository(database)
 request_repository = RequestRepository(database)
-project_repository = ProjectRepository(connection_string, database)
+project_repository = ProjectRepository(database)
 
 edit_profile_page_mapper = EditProfilePageMapper(user_repository, request_repository, project_repository)
 

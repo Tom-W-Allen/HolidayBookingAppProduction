@@ -1,22 +1,14 @@
 from flask import render_template, Blueprint, request, session, redirect
 from persistence.DatabaseFactory import get_database
-from common.SecurityValidation import html_manipulation_detected
 from mappers.ForgottenPasswordMapper import ForgottenPasswordMapper
 from domains.user.UserRepository import UserRepository
-from domains.request.RequestRepository import RequestRepository
-from domains.project.ProjectRepository import ProjectRepository
 
 forgotten_password_blueprint = Blueprint('forgotten_password_blueprint', __name__)
-
-connection_string = "persistence/HolidayBookingDatabase.db"
-
 database = get_database()
 
 user_repository = UserRepository(database)
-request_repository = RequestRepository(database)
-project_repository = ProjectRepository(connection_string, database)
 
-forgotten_password_page_mapper = ForgottenPasswordMapper(user_repository, request_repository, project_repository)
+forgotten_password_page_mapper = ForgottenPasswordMapper(user_repository,)
 
 
 @forgotten_password_blueprint.route("/forgotten-password", methods=["GET", "POST"])

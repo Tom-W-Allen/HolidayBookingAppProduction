@@ -9,6 +9,7 @@ from domains.user.UserRepositoryInterface import IUserRepository
 from common.enums.State import State
 from datetime import datetime
 from persistence.Database import Database
+from common.DateFunctions import format_database_date
 import hashlib
 
 
@@ -41,6 +42,21 @@ class UserRepository(IUserRepository):
                                         [str(expiry_day),
                                          str(expiry_time),
                                          str(user_id)])
+
+    def get_expiry_time(self, reset_id: str) -> Optional[datetime]:
+
+        expiry = self._database.query_database("SELECT reset_expiry_date, reset_expiry_time FROM users "
+                                               "WHERE reset_identifier =?",
+                                               arguments=[str(reset_id)])
+
+        if len(expiry) < 1:
+            return None
+        else:
+            date_values = format_database_date(expiry[0][0])
+            time_values = format_database_date(expiry[0][1])
+
+            return datetime(date_values.year, date_values.month, date_values.day,
+                            time_values.hour, time_values.minute, time_values.second)
 
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int], email: Optional[str]):

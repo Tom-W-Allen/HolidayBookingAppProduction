@@ -6,6 +6,7 @@ from domains.user.models.PasswordValidation import PasswordValidation
 from common.enums.UserType import UserType
 from persistence.Database import Database
 from typing import Optional
+import datetime
 
 
 # For details on informal Python interfaces, see (Murphy, 2024).
@@ -26,6 +27,9 @@ class IUserRepository:
         pass
 
     def update_reset_expiry(self, expiry_day: str, expiry_time: str, user_id: int):
+        pass
+
+    def get_expiry_time(self, reset_id: str) -> Optional[datetime]:
         pass
 
     def add_user(self, username: str, password: str, account_type: str, first_name: str,

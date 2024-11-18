@@ -20,6 +20,7 @@ from blueprints.CreateProjectBlueprint import create_project_blueprint
 from blueprints.ProjectReviewBlueprint import project_review_blueprint
 from blueprints.EditProfileBlueprint import edit_profile_blueprint
 from blueprints.ForgottenPasswordBlueprint import forgotten_password_blueprint
+from blueprints.ResetPasswordBlueprint import reset_password_blueprint
 
 # login_manager object set up in accordance with Flask-Login (2024) documentation.
 login_manager = LoginManager()
@@ -34,6 +35,7 @@ application.register_blueprint(create_project_blueprint)
 application.register_blueprint(project_review_blueprint)
 application.register_blueprint(edit_profile_blueprint)
 application.register_blueprint(forgotten_password_blueprint)
+application.register_blueprint(reset_password_blueprint)
 
 login_manager.init_app(application)
 login_manager.login_view = 'login'

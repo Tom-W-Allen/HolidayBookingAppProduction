@@ -1,8 +1,6 @@
 from flask import session, request
 from blueprints.models.ForgottenPasswordPageData import ForgottenPasswordPageData
 from common.enums.State import State
-from domains.project.ProjectRepositoryInterface import IProjectRepository
-from domains.request.RequestRepositoryInterface import IRequestRepository
 from domains.user.UserRepositoryInterface import IUserRepository
 from mappers.BaseMapper import BaseMapper
 from common.EmailFunctions import get_email_authentication_details, send_email
@@ -11,13 +9,8 @@ import random
 import datetime
 
 class ForgottenPasswordMapper(BaseMapper):
-    def __init__(self,
-                 user_repository: IUserRepository,
-                 request_repository: IRequestRepository,
-                 project_repository: IProjectRepository):
+    def __init__(self, user_repository: IUserRepository):
         self.user_repository = user_repository
-        self.request_repository = request_repository
-        self.project_repository = project_repository
 
     def map_initial_page_data(self) -> ForgottenPasswordPageData:
 
@@ -56,7 +49,7 @@ class ForgottenPasswordMapper(BaseMapper):
                 authentication = get_email_authentication_details()
 
                 email_message = ("You have received this email because a password reset was requested for your account, please use the link below: \n\n"
-                                 f"{authentication.server_url}/?reset={url_identifier}\n\n"
+                                 f"{authentication.server_url}/reset?id={url_identifier}\n\n"
                                  f"If you did not request a reset, please ensure that your accounts are secure.")
 
                 send_email(email_message, request.form["Registered Password"], "Holiday Booking Application Password Reset", authentication)
