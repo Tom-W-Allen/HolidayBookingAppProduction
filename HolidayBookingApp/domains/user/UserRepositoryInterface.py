@@ -32,6 +32,15 @@ class IUserRepository:
     def get_expiry_time(self, reset_id: str) -> Optional[datetime]:
         pass
 
+    def update_password_by_reset_id(self, reset_id: str, password: str):
+        pass
+
+    def get_email_by_id(self, reset_id: str) -> str:
+        pass
+
+    def clear_expiry_data(self, reset_id: str):
+        pass
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int]):
         pass

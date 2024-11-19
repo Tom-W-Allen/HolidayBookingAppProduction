@@ -58,6 +58,25 @@ class UserRepository(IUserRepository):
             return datetime(date_values.year, date_values.month, date_values.day,
                             time_values.hour, time_values.minute, time_values.second)
 
+    def clear_expiry_data(self, reset_id: str):
+
+        self._database.query_database("UPDATE users SET reset_expiry_date = NULL, reset_expiry_time = NULL, "
+                                      "reset_identifier = NULL "
+                                      "WHERE reset_identifier = ?",
+                                      arguments=[reset_id])
+
+    def get_email_by_id(self, reset_id: str) -> str:
+
+        email = self._database.query_database("SELECT email_address FROM users WHERE reset_identifier = ?",
+                                              arguments=[reset_id])
+
+        return None if len(email) < 1 else email[0][0]
+
+    def update_password_by_reset_id(self, reset_id: str, password: str):
+
+        self._database.query_database("UPDATE users SET user_password = ? WHERE reset_identifier = ?",
+                                      arguments=[password, reset_id])
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
 
@@ -102,12 +121,12 @@ class UserRepository(IUserRepository):
     def get_all_users(self) -> "list[PublicUser]":
 
         user_details = self._database.query_database("SELECT user_id, user_name, user_role, first_name, "
-                                                     "surname, manager "
+                                                     "surname, manager, email_address "
                                                      "FROM users")
 
         user_list = []
         for user in user_details:
-            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5])
+            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6])
 
             user_list.append(user)
 
@@ -116,7 +135,7 @@ class UserRepository(IUserRepository):
     def get_public_user_details(self, user_id: int) -> Optional[PublicUser]:
 
         user_details = self._database.query_database("SELECT user_id, user_name, user_role, first_name, "
-                                                     "surname, manager "
+                                                     "surname, manager, email_address "
                                                      "FROM users WHERE user_id = ?",
                                                      arguments=[str(user_id)])
 
@@ -128,20 +147,21 @@ class UserRepository(IUserRepository):
                           user_details[0][2],
                           user_details[0][3],
                           user_details[0][4],
-                          None if user_details[0][5] is None else int(user_details[0][5]))
+                          None if user_details[0][5] is None else int(user_details[0][5]),
+                          user_details[0][6])
 
         return user
 
     def get_user_type_details(self, user_type: UserType):
 
         user_details = self._database.query_database("SELECT user_id, user_name, user_role, "
-                                                     "first_name, surname, manager "
+                                                     "first_name, surname, manager, email_address "
                                                      "FROM users WHERE user_role = ?",
                                                      arguments= [str(user_type.name)])
 
         user_list = []
         for user in user_details:
-            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5])
+            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6])
 
             user_list.append(user)
 

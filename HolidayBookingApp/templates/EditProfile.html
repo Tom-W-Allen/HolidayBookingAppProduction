@@ -67,7 +67,11 @@
             <p>
                 Surname
                 <input type="text" name="surname" value="{{user_details.surname}}" readonly maxlength="50">
-            </p>   
+            </p>
+            <p>
+                Email
+                <input type="text" name="email" value="{{user_details.email}}" readonly maxlength="256">
+            </p>
         {% else %}
             <p>
                 First name
@@ -76,7 +80,11 @@
             <p>
                 Surname
                 <input type="text" name="surname" value="{{user_details.surname}}" maxlength="50">
-            </p>           
+            </p>
+            <p>
+                Email
+                <input type="text" name="email" value="{{user_details.email}}" maxlength="256">
+            </p>
         {% endif %}
         {% if manager_list|length > 0 %}
             {% if approval_required %}
@@ -148,6 +156,7 @@
         <input type="hidden" name="first name" value="{{user_details.first_name}}">
         <input type="hidden" name="surname" value="{{user_details.surname}}">
         <input type="hidden" name="manager" value="{{user_details.manager}}">
+        <input type="hidden" name="email" value="{{user_details.email}}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     </form>
 </div>
