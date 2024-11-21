@@ -285,6 +285,16 @@
 }
 
 
+.forgotten_container{
+  display: grid;
+  font-family: Arial, Helvetica, sans-serif;
+  align-items: center;
+  margin-left: 25%;
+  margin-right: 25%;
+  height: 520px;
+  align-text: center
+}
+
 .login_container{
   display: grid;
   grid-template-columns: 49% 2% 49%;
@@ -552,6 +562,15 @@
 .basic_form_confirmation_container{
   text-align: center;
   font-family:Arial, Helvetica, sans-serif;
+}
+
+.spacing{
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+.centre_text{
+  text-align: center;
 }
 
 .basic_form{

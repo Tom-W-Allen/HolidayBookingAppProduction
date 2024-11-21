@@ -9,6 +9,7 @@ from domains.user.UserRepositoryInterface import IUserRepository
 from common.enums.State import State
 from datetime import datetime
 from persistence.Database import Database
+from common.DateFunctions import format_database_date
 import hashlib
 
 
@@ -17,15 +18,77 @@ class UserRepository(IUserRepository):
         super().__init__(database)
         self._database = database
 
+    def is_postgreSQL(self):
+        return self._database.type == "postgreSQL"
+
+    def reset_identifier_exists(self, identifier: str) -> bool:
+
+        records = self._database.query_database("SELECT * FROM users WHERE reset_identifier = ?",
+                                                arguments=[str(identifier)])
+
+        return len(records) > 0
+
+    def update_reset_identifier(self, identifier: str, user_id: int):
+
+        self._database.query_database("UPDATE users SET reset_identifier = ? WHERE user_id = ?",
+                                      arguments=
+                                        [str(identifier),
+                                         str(user_id)])
+
+    def update_reset_expiry(self, expiry_day: str, expiry_time: str, user_id: int):
+
+        self._database.query_database("UPDATE users SET reset_expiry_date = ?, reset_expiry_time = ? WHERE user_id = ?",
+                                      arguments=
+                                        [str(expiry_day),
+                                         str(expiry_time),
+                                         str(user_id)])
+
+    def get_expiry_time(self, reset_id: str) -> Optional[datetime]:
+
+        expiry = self._database.query_database("SELECT reset_expiry_date, reset_expiry_time FROM users "
+                                               "WHERE reset_identifier =?",
+                                               arguments=[str(reset_id)])
+
+        if len(expiry) < 1:
+            return None
+        else:
+            date_values = format_database_date(expiry[0][0])
+            time_values = format_database_date(expiry[0][1])
+
+            return datetime(date_values.year, date_values.month, date_values.day,
+                            time_values.hour, time_values.minute, time_values.second)
+
+    def clear_expiry_data(self, reset_id: str):
+
+        self._database.query_database("UPDATE users SET reset_expiry_date = NULL, reset_expiry_time = NULL, "
+                                      "reset_identifier = NULL "
+                                      "WHERE reset_identifier = ?",
+                                      arguments=[reset_id])
+
+    def get_email_by_id(self, reset_id: str) -> str:
+
+        email = self._database.query_database("SELECT email_address FROM users WHERE reset_identifier = ?",
+                                              arguments=[reset_id])
+
+        return None if len(email) < 1 else email[0][0]
+
+    def update_password_by_reset_id(self, reset_id: str, password: str):
+
+        self._database.query_database("UPDATE users SET user_password = ? WHERE reset_identifier = ?",
+                                      arguments=[password, reset_id])
+
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
-                 surname: str, holidays: int, manager: Optional[int]):
+                 surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
 
         top_id = self._database.query_database("SELECT user_id FROM users ORDER BY user_id DESC",
                                                limit=1)
 
         record_id = 1 if len(top_id) < 1 else int(top_id[0][0]) + 1
 
-        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        # only store email addresses if they are going to the encrypted server
+        email_entry = email if self.is_postgreSQL() else None
+
+        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                       arguments=
                                         [str(record_id),
                                          str(username),
@@ -35,8 +98,19 @@ class UserRepository(IUserRepository):
                                          str(first_name),
                                          str(surname),
                                          str(manager) if manager is not None else manager,
+                                         email_entry,
+                                         None,
+                                         None,
+                                         None,
                                          str(holidays),
                                          str(0)]) # No password attempts yet as account was just created
+
+    def get_user_id_from_email(self, email_address: str) -> int:
+
+        user_id = self._database.query_database("SELECT user_id FROM users WHERE email_address = ?",
+                                                arguments=[str(email_address)])
+
+        return None if len(user_id) == 0 else int(user_id[0][0])
 
     def get_user_manager(self, user_id: int) -> int:
 
@@ -49,12 +123,12 @@ class UserRepository(IUserRepository):
     def get_all_users(self) -> "list[PublicUser]":
 
         user_details = self._database.query_database("SELECT user_id, user_name, user_role, first_name, "
-                                                     "surname, manager "
+                                                     "surname, manager, email_address "
                                                      "FROM users")
 
         user_list = []
         for user in user_details:
-            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5])
+            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6])
 
             user_list.append(user)
 
@@ -63,7 +137,7 @@ class UserRepository(IUserRepository):
     def get_public_user_details(self, user_id: int) -> Optional[PublicUser]:
 
         user_details = self._database.query_database("SELECT user_id, user_name, user_role, first_name, "
-                                                     "surname, manager "
+                                                     "surname, manager, email_address "
                                                      "FROM users WHERE user_id = ?",
                                                      arguments=[str(user_id)])
 
@@ -75,20 +149,21 @@ class UserRepository(IUserRepository):
                           user_details[0][2],
                           user_details[0][3],
                           user_details[0][4],
-                          None if user_details[0][5] is None else int(user_details[0][5]))
+                          None if user_details[0][5] is None else int(user_details[0][5]),
+                          user_details[0][6])
 
         return user
 
     def get_user_type_details(self, user_type: UserType):
 
         user_details = self._database.query_database("SELECT user_id, user_name, user_role, "
-                                                     "first_name, surname, manager "
+                                                     "first_name, surname, manager, email_address "
                                                      "FROM users WHERE user_role = ?",
                                                      arguments= [str(user_type.name)])
 
         user_list = []
         for user in user_details:
-            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5])
+            user = PublicUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6])
 
             user_list.append(user)
 
@@ -123,18 +198,23 @@ class UserRepository(IUserRepository):
         except ValueError:
             manager = 0
 
+        # only store email addresses if they are going to the encrypted server
+        email_entry = user.email if self.is_postgreSQL() else None
+
         current_details = self.get_public_user_details(user.user_id)
 
         self._database.query_database("UPDATE users SET "
                                       "first_name = ?, "
                                       "surname = ?, "
-                                      "manager = ? "
+                                      "manager = ?, "
+                                      "email_address = ? "
                                       "WHERE "
                                       "user_id = ?",
                                       arguments=
                                         [str(user.first_name),
                                          str(user.surname),
                                          str(manager) if manager > 0 else None,
+                                         email_entry,
                                          str(user.user_id)])
 
         # Need to hash password before updating table if it has been changed.

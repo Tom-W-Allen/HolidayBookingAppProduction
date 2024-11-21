@@ -149,7 +149,8 @@ class EditProfilePageMapper(BaseMapper):
                                   manager_account_details.account_type,
                                   request.form["first name"],
                                   request.form["surname"],
-                                  manager_account_details.manager)
+                                  manager_account_details.manager,
+                                  request.form["email"])
 
         validation = self.user_repository.validate_edit_profile(user_details,
                                                                 request.form["password"],
@@ -194,7 +195,8 @@ class EditProfilePageMapper(BaseMapper):
                                manager_account_details.account_type,
                                request.form["first name"],
                                request.form["surname"],
-                               manager_account_details.manager)
+                               manager_account_details.manager,
+                               request.form["email"])
 
         if request.form["choice"] == "Cancel":
             state = State.Normal
@@ -242,6 +244,7 @@ class EditProfilePageMapper(BaseMapper):
             user_details = PublicUser(user_id,
                                       None,
                                       session["account_type"],
+                                      None,
                                       None,
                                       None,
                                       None)

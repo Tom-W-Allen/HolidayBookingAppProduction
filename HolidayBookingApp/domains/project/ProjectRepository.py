@@ -12,8 +12,8 @@ from common.DateFunctions import format_database_date
 
 
 class ProjectRepository(IProjectRepository):
-    def __init__(self, connection_string: str, database: Database):
-        super().__init__(connection_string, database)
+    def __init__(self, database: Database):
+        super().__init__(database)
         self._database = database
 
     def validate_project_dates(self, start_date: str, end_date: str, project_name: str) -> ProjectValidationDetails:

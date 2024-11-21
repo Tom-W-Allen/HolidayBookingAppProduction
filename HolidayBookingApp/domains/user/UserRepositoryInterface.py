@@ -6,12 +6,40 @@ from domains.user.models.PasswordValidation import PasswordValidation
 from common.enums.UserType import UserType
 from persistence.Database import Database
 from typing import Optional
+import datetime
 
 
 # For details on informal Python interfaces, see (Murphy, 2024).
 class IUserRepository:
     def __init__(self, database: Database):
         self._database = database
+
+    def is_postgreSQL(self):
+        pass
+
+    def reset_identifier_exists(self, identifier: str) -> bool:
+        pass
+
+    def get_user_id_from_email(self, email_address: str) -> int:
+        pass
+
+    def update_reset_identifier(self, identifier: str, user_id: int):
+        pass
+
+    def update_reset_expiry(self, expiry_day: str, expiry_time: str, user_id: int):
+        pass
+
+    def get_expiry_time(self, reset_id: str) -> Optional[datetime]:
+        pass
+
+    def update_password_by_reset_id(self, reset_id: str, password: str):
+        pass
+
+    def get_email_by_id(self, reset_id: str) -> str:
+        pass
+
+    def clear_expiry_data(self, reset_id: str):
+        pass
 
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int]):

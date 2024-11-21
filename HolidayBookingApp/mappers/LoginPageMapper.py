@@ -93,13 +93,16 @@ class LoginPageMapper:
             # Use hexidigest to retrieve the hash digest of the password
             hash_digest = bytes_password.hexdigest()
 
+            email = request.form["Email Address"] if self.user_repository.is_postgreSQL() else None
+
             self.user_repository.add_user(request.form["User Name"],
                                           hash_digest,
                                           request.form["Account Type"],
                                           request.form["First Name"],
                                           request.form["Surname"],
                                           25 if request.form["Account Type"] == 'basic' else 0,
-                                          None)
+                                          None,
+                                          email)
 
             message = "Your account has been set up, please log in."
 

@@ -5,7 +5,7 @@ def setup_postgresql_database(database: PostgreSQLDatabase):
         schema_exists = len(database.query_database("SELECT * FROM information_schema.schemata "
                                                     "WHERE schema_name = ?;",
                                                     arguments=["Common"],
-                                                    set_search_path=False)) < 1
+                                                    set_search_path=False)) > 0
         if not schema_exists:
 
             # Create common schema
