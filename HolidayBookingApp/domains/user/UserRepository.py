@@ -88,7 +88,7 @@ class UserRepository(IUserRepository):
         # only store email addresses if they are going to the encrypted server
         email_entry = email if self.is_postgreSQL() else None
 
-        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                       arguments=
                                         [str(record_id),
                                          str(username),
@@ -99,6 +99,8 @@ class UserRepository(IUserRepository):
                                          str(surname),
                                          str(manager) if manager is not None else manager,
                                          email_entry,
+                                         None,
+                                         None,
                                          None,
                                          str(holidays),
                                          str(0)]) # No password attempts yet as account was just created

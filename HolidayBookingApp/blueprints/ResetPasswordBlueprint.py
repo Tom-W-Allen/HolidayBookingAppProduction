@@ -19,6 +19,10 @@ def reset_password():
     try:
         reset_id = request.args.get("id")
         expiry_time = user_repository.get_expiry_time(reset_id)
+
+        if not user_repository.is_postgreSQL():
+            abort(404, "The application is being run in a local environment. Email addresses cannot be entered or changed")
+
         if request.method == "GET":
             # Check if id exists. If it does not, abort. Abort if we are past expiry date associated with id
             if expiry_time is None:
@@ -36,10 +40,10 @@ def reset_password():
                 case _:
                     page_data = reset_password_page_mapper.map_error()
     except NotFound as e:
-        abort(404)
+        abort(404, description=e.description)
     except:
         page_data = reset_password_page_mapper.map_error()
 
     return render_template("ResetPassword.html",
-                           state=page_data.state,
+                           state=page_data.state.name,
                            message=page_data.message)

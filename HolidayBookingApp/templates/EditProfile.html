@@ -68,10 +68,12 @@
                 Surname
                 <input type="text" name="surname" value="{{user_details.surname}}" readonly maxlength="50">
             </p>
-            <p>
-                Email
-                <input type="text" name="email" value="{{user_details.email}}" readonly maxlength="256">
-            </p>
+            {% if isProduction %}
+                <p>
+                    Email
+                    <input type="text" name="email" value="{{user_details.email}}" readonly maxlength="256">
+                </p>
+            {% endif %}
         {% else %}
             <p>
                 First name
@@ -81,10 +83,12 @@
                 Surname
                 <input type="text" name="surname" value="{{user_details.surname}}" maxlength="50">
             </p>
-            <p>
-                Email
-                <input type="text" name="email" value="{{user_details.email}}" maxlength="256">
-            </p>
+            {% if isProduction %}
+                <p>
+                    Email
+                    <input type="text" name="email" value="{{user_details.email}}" maxlength="256">
+                </p>
+            {% endif %}
         {% endif %}
         {% if manager_list|length > 0 %}
             {% if approval_required %}

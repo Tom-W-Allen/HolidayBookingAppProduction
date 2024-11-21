@@ -19,7 +19,7 @@ class ResetPasswordPageMapper(BaseMapper):
         actual_email = request.form["email address"]
 
         if expected_email != actual_email:
-            state = State.Error
+            state = State.Warning
             message = "Provided email address is incorrect."
         else:
             password = request.form["new password"]

@@ -65,5 +65,6 @@ def edit_profile():
                            base_id=page_data.base_id,
                            current_page='edit profile',
                            selected_manager=page_data.selected_manager,
-                           logout_presses=page_data.logout_presses)
+                           logout_presses=page_data.logout_presses,
+                           isProduction=user_repository.is_postgreSQL())
 

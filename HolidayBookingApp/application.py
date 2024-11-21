@@ -76,7 +76,8 @@ def login():
     return render_template("Login.html",
                            state=str(page_data.state),
                            message=page_data.message,
-                           signing_up=page_data.signing_up)
+                           signing_up=page_data.signing_up,
+                           isProduction=user_repository.is_postgreSQL())
 
 load_dotenv()
 environment = getenv("ENVIRONMENT")

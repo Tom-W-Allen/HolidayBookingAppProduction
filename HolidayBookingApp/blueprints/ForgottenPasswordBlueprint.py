@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, session, redirect
+from flask import render_template, Blueprint, request, abort, redirect
 from persistence.DatabaseFactory import get_database
 from mappers.ForgottenPasswordMapper import ForgottenPasswordMapper
 from domains.user.UserRepository import UserRepository
@@ -13,6 +13,8 @@ forgotten_password_page_mapper = ForgottenPasswordMapper(user_repository,)
 
 @forgotten_password_blueprint.route("/forgotten-password", methods=["GET", "POST"])
 def send_email():
+    if not user_repository.is_postgreSQL():
+        abort(404, "The application is being run in a local environment. Email addresses cannot be entered or changed")
 
     try:
         if request.method == "GET":
