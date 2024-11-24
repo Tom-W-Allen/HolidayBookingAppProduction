@@ -42,7 +42,7 @@ class IUserRepository:
         pass
 
     def add_user(self, username: str, password: str, account_type: str, first_name: str,
-                 surname: str, holidays: int, manager: Optional[int]):
+                 surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
         pass
 
     def get_user_manager(self, user_id: int) -> int:
