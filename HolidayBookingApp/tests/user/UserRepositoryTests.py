@@ -159,64 +159,88 @@ class UserRepositoryMethodTests(TestCase):
 
         self.assertFalse(actual_result)
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_12_query_function)
     def test_get_all_users_returns_users_when_users_exist(self):
 
-        test_data = test_get_all_users_returns_users_when_users_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
 
-        actual_result = _test_executor.execute_test(test_data, "get_all_users")
+        expected_result = test_12_expected_result()
+        actual_result = sut.get_all_users()
 
-        self.assertEqual(len(test_data.expected_result), len(actual_result))
+        self.assertEqual(len(expected_result), len(actual_result))
 
         for i in range(0, len(actual_result)):
-            self.assertEqual(test_data.expected_result[i].user_id, actual_result[i].user_id)
-            self.assertEqual(test_data.expected_result[i].user_name, actual_result[i].user_name)
-            self.assertEqual(test_data.expected_result[i].account_type, actual_result[i].account_type)
-            self.assertEqual(test_data.expected_result[i].first_name, actual_result[i].first_name)
-            self.assertEqual(test_data.expected_result[i].surname, actual_result[i].surname)
-            self.assertEqual(test_data.expected_result[i].manager, actual_result[i].manager)
+            self.assertEqual(expected_result[i].user_id, actual_result[i].user_id)
+            self.assertEqual(expected_result[i].user_name, actual_result[i].user_name)
+            self.assertEqual(str(expected_result[i].account_type), str(actual_result[i].account_type))
+            self.assertEqual(expected_result[i].first_name, actual_result[i].first_name)
+            self.assertEqual(expected_result[i].surname, actual_result[i].surname)
+            self.assertEqual(expected_result[i].manager, actual_result[i].manager)
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_13_query_function)
     def test_get_all_users_returns_empty_list_when_users_do_not_exist(self):
 
-        test_data = test_get_all_users_returns_empty_list_when_users_do_not_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
 
-        actual_result = _test_executor.execute_test(test_data, "get_all_users")
+        actual_result = sut.get_all_users()
 
         self.assertEqual(0, len(actual_result))
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_14_query_function)
     def test_get_public_user_details_returns_user_details_when_user_exists(self):
 
-        test_data = test_get_public_user_details_returns_user_details_when_user_exists_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_14_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_public_user_details")
+        expected_result = test_14_expected_result()[0]
+        actual_result = sut.get_public_user_details(*[arg for arg in input_parameters])
 
-        self.assertEqual(test_data.expected_result.user_id, actual_result.user_id)
-        self.assertEqual(test_data.expected_result.user_name, actual_result.user_name)
-        self.assertEqual(test_data.expected_result.account_type, actual_result.account_type)
-        self.assertEqual(test_data.expected_result.first_name, actual_result.first_name)
-        self.assertEqual(test_data.expected_result.surname, actual_result.surname)
-        self.assertEqual(test_data.expected_result.manager, actual_result.manager)
+        self.assertEqual(expected_result.user_id, actual_result.user_id)
+        self.assertEqual(expected_result.user_name, actual_result.user_name)
+        self.assertEqual(str(expected_result.account_type), str(actual_result.account_type))
+        self.assertEqual(expected_result.first_name, actual_result.first_name)
+        self.assertEqual(expected_result.surname, actual_result.surname)
+        self.assertEqual(expected_result.manager, actual_result.manager)
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_15_query_function)
     def test_get_public_user_details_returns_none_when_user_does_not_exist(self):
 
-        test_data = test_get_public_user_details_returns_none_when_user_does_not_exist()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_15_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_public_user_details")
+        actual_result = sut.get_public_user_details(*[arg for arg in input_parameters])
 
         self.assertEqual(None, actual_result)
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "get_public_user_details", test_16_get_public_user_details)
+    @patch.object(Database, "query_database", test_16_query_function)
     def test_update_user_password_not_updated_when_not_requested(self):
 
-        test_data = test_update_user_password_not_updated_when_not_requested_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_16_method_parameters()
 
-        # Method is void so cannot check output
-        _test_executor.execute_test(test_data, "update_user")
+        sut.update_user(*[arg for arg in input_parameters])
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "get_public_user_details", test_17_get_public_user_details)
+    @patch.object(Database, "query_database", test_17_query_function)
     def test_update_user_password_updated_when_requested(self):
 
-        test_data = test_update_user_password_updated_when_requested_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_16_method_parameters()
 
-        # Method is void so cannot check output
-        _test_executor.execute_test(test_data, "update_user")
+        sut.update_user(*[arg for arg in input_parameters])
 
     def test_update_user_projects_and_requests_updated_when_manager_changes(self):
 

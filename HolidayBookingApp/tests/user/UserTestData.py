@@ -237,6 +237,139 @@ def test_11_query_function(self, query_string, arguments=None, limit=None):
         raise Exception("Unexpected query")
 # </editor-fold>
 
+# <editor-fold desc="Test 12 Data">
+def test_12_query_strings():
+    return "SELECT user_id, user_name, user_role, first_name, surname, manager, email_address FROM users"
+
+def test_12_expected_result():
+    return[PublicUser(1, "Test User Name", "basic", "Test First Name",
+                      "Test Surname", 2, "Test Email")]
+
+def test_12_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_12_query_strings() and arguments is None and limit is None:
+        result = test_12_expected_result()[0]
+        return [(result.user_id, result.user_name, "basic", result.first_name,
+                 result.surname, result.manager, result.email)]
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 13 Data">
+def test_13_query_strings():
+    return "SELECT user_id, user_name, user_role, first_name, surname, manager, email_address FROM users"
+
+def test_13_expected_result():
+    return[PublicUser(1, "Test User Name", "basic", "Test First Name",
+                      "Test Surname", 2, "Test Email")]
+
+def test_13_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_12_query_strings() and arguments is None and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 14 Data">
+def test_14_method_parameters():
+    return ["1"]
+
+def test_14_query_strings():
+    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, "
+            "email_address FROM users WHERE user_id = ?")
+
+def test_14_mock_parameters():
+    return ["1"]
+
+def test_14_expected_result() -> [UserLoginData]:
+    return [PublicUser(1, "Test User Name", "basic", "Test First Name",
+                       "Test Surname", 5, "Test Email")]
+
+def test_14_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_14_query_strings() and arguments == test_14_mock_parameters() and limit is None:
+        result = test_14_expected_result()[0]
+        return [(result.user_id, result.user_name, "basic", result.first_name, result.surname,
+                 result.manager, result.email)]
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 15 Data">
+def test_15_method_parameters():
+    return ["1"]
+
+def test_15_query_strings():
+    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, "
+            "email_address FROM users WHERE user_id = ?")
+
+def test_15_mock_parameters():
+    return ["1"]
+
+def test_15_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_15_query_strings() and arguments == test_15_mock_parameters() and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 16 Data">
+def test_16_get_public_user_details(self, x):
+    return PublicUser(1, "Test User Name", "manager", "Test Name",
+                       "Test Surname", None, "Test Email")
+
+def test_16_method_parameters():
+    return [PublicUser(1, "Test User Name", "manager", "Test Name",
+                       "Test Surname", None, "Test Email")]
+
+def test_16_query_strings():
+    return "UPDATE users SET first_name = ?, surname = ?, manager = ?, email_address = ? WHERE user_id = ?"
+
+def test_16_mock_parameters():
+    inputs = test_16_method_parameters()[0]
+    return [inputs.first_name, inputs.surname, None, inputs.email, str(inputs.user_id)]
+
+def test_16_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_16_query_strings() and arguments == test_16_mock_parameters() and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 17 Data">
+def test_17_get_public_user_details(self, x):
+    return PublicUser(1, "Test User Name", "manager", "Test Name",
+                       "Test Surname", None, "Test Email")
+
+def test_17_method_parameters():
+    return [PublicUser(1, "Test User Name", "manager", "Test Name",
+                       "Test Surname", None, "Test Email"), True]
+
+def test_17_query_strings():
+    return ("UPDATE users SET first_name = ?, surname = ?, manager = ?, email_address = ? WHERE user_id = ?",
+            "SELECT password_change FROM users WHERE user_id = ?",
+            "UPDATE users SET user_password = ?, password_change = NULL WHERE user_id = ?")
+
+def test_17_mock_parameters():
+    inputs = test_17_method_parameters()[0]
+    return [[inputs.first_name, inputs.surname, None, inputs.email, str(inputs.user_id)],
+            [inputs.user_id]]
+
+def test_17_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_17_query_strings()[0] and arguments == test_17_mock_parameters()[0] and limit is None:
+        return []
+    elif query_string == test_17_query_strings()[1] and arguments == test_17_mock_parameters()[1] and limit is None:
+        return [("Test New Password", None)]
+    elif query_string == test_17_query_strings()[2] and arguments == test_17_mock_parameters()[2] and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
 ##########################################################################################################
 
 def test_add_user_sets_id_as_1_when_no_users_in_database_data():

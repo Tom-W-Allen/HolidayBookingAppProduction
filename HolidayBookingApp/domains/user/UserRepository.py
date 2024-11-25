@@ -195,6 +195,8 @@ class UserRepository(IUserRepository):
     def update_user(self, user: PublicUser, password_updated: bool = False):
         try:
             manager = int(user.manager)
+        except TypeError:
+            manager = 0
         except ValueError:
             manager = 0
 
