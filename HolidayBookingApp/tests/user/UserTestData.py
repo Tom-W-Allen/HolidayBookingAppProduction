@@ -5,6 +5,60 @@ from HolidayBookingApp.domains.user.models.UserLoginData import UserLoginData
 from datetime import datetime
 
 
+# <editor-fold desc="Test 1 Data">
+def test_1_method_parameters():
+    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, 2, "Test email"]
+
+def test_1_query_strings():
+    return ("SELECT user_id FROM users ORDER BY user_id DESC",
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+
+def test_1_mock_parameters():
+    return (
+        None,
+        ["1", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
+         "Test email", None, None, None, "25", "0"]
+    )
+
+def test_1_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_1_query_strings()[0] and arguments == test_1_mock_parameters()[0] and limit == 1:
+        return []
+    elif query_string == test_1_query_strings()[1] and arguments == test_1_mock_parameters()[1] and limit is None:
+        return None
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+
+# <editor-fold desc="Test 2 Data">
+def test_2_method_parameters():
+    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, 2, "Test email"]
+
+def test_2_query_strings():
+    return ("SELECT user_id FROM users ORDER BY user_id DESC",
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+
+def test_2_mock_parameters():
+    return (
+        None,
+        ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
+         "Test email", None, None, None, "25", "0"]
+    )
+
+def test_2_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_2_query_strings()[0] and arguments == test_2_mock_parameters()[0] and limit == 1:
+        return [(1, None)]
+    elif query_string == test_2_query_strings()[1] and arguments == test_2_mock_parameters()[1] and limit is None:
+        return None
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+
+##########################################################################################################
+
 def test_add_user_sets_id_as_1_when_no_users_in_database_data():
 
     method_parameters = ["Test user name", "Test password", str(UserType.basic),

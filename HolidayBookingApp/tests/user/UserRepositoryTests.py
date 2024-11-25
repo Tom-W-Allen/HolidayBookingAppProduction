@@ -1,31 +1,44 @@
-from unittest import TestCase, main
+from unittest import TestCase
+from unittest.mock import MagicMock, patch
+
 from HolidayBookingApp.domains.user.UserRepository import UserRepository
 from HolidayBookingApp.tests.common.TestExecution import *
 from HolidayBookingApp.tests.user.UserTestData import *
+from persistence.Database import Database
 
-_connection_string = "persistence/HolidayBookingDatabase.db"
 _class_under_test = "domains.user.UserRepository"
-_sut = UserRepository(_connection_string)
+_database = MagicMock()
+_sut = UserRepository(_database)
 _test_executor = TestExecutor(_sut, _class_under_test)
 
+def mock_postgreSQL(self):
+    return True
 
 class UserRepositoryMethodTests(TestCase):
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_1_query_function)
     def test_add_user_sets_id_as_1_when_no_users_in_database(self):
 
-        test_data = test_add_user_sets_id_as_1_when_no_users_in_database_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_1_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "add_user")
+        expected_result = None
+        actual_result = sut.add_user(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_2_query_function)
     def test_add_user_increments_id_when_users_already_exist(self):
 
-        test_data = test_add_user_increments_id_when_users_already_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_2_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "add_user")
-
-        self.assertEqual(test_data.expected_result, actual_result)
+        expected_result = None
+        actual_result = sut.add_user(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
     def test_add_user_manager_id_set_when_not_none(self):
 
