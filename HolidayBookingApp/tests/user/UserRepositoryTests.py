@@ -40,85 +40,122 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.add_user(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_3_query_function)
     def test_add_user_manager_id_set_when_not_none(self):
 
-        test_data = test_add_user_manager_id_set_when_not_none_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_3_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "add_user")
+        expected_result = None
+        actual_result = sut.add_user(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_4_query_function)
     def test_get_user_manager_id_returned_when_manager_exists(self):
 
-        test_data = test_get_user_manager_id_returned_when_manager_exists_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_4_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_user_manager")
+        expected_result = 1
+        actual_result = sut.get_user_manager(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_5_query_function)
     def test_get_user_manager_negative_1_returned_when_manager_does_not_exist(self):
 
-        test_data = test_get_user_negative_1_returned_when_manager_does_not_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_5_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_user_manager")
+        expected_result = -1
+        actual_result = sut.get_user_manager(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_6_query_function)
     def test_get_user_type_details_empty_list_returned_when_no_users_exist(self):
 
-        test_data = test_get_user_type_details_empty_list_returned_when_no_users_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_6_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_user_type_details")
+        expected_result = []
+        actual_result = sut.get_user_type_details(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_7_query_function)
     def test_get_user_type_details_list_returned_when_users_exist(self):
 
-        test_data = test_get_user_type_details_list_returned_when_users_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_7_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_user_type_details")
+        expected_result = test_7_expected_result()
+        actual_result = sut.get_user_type_details(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(len(test_data.expected_result), len(actual_result))
+        for i in range(0, len(expected_result)):
+            self.assertEqual(expected_result[i].user_id, actual_result[i].user_id)
+            self.assertEqual(expected_result[i].user_name, actual_result[i].user_name)
+            self.assertEqual(expected_result[i].account_type, actual_result[i].account_type)
+            self.assertEqual(expected_result[i].first_name, actual_result[i].first_name)
+            self.assertEqual(expected_result[i].surname, actual_result[i].surname)
 
-        for i in range(0, len(test_data.expected_result)):
-            self.assertEqual(test_data.expected_result[i].user_id, actual_result[i].user_id)
-            self.assertEqual(test_data.expected_result[i].user_name, actual_result[i].user_name)
-            self.assertEqual(test_data.expected_result[i].account_type, actual_result[i].account_type)
-            self.assertEqual(test_data.expected_result[i].first_name, actual_result[i].first_name)
-            self.assertEqual(test_data.expected_result[i].surname, actual_result[i].surname)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_8_query_function)
     def test_get_user_login_details_none_returned_when_no_user_exists(self):
 
-        test_data = test_get_user_login_details_none_returned_when_no_user_exists_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_8_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_user_login_details")
+        expected_result = None
+        actual_result = sut.get_user_login_details(*[arg for arg in input_parameters])
+        self.assertEqual(expected_result, actual_result)
 
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_9_query_function)
     def test_get_user_login_details_details_returned_when_user_exists(self):
 
-        test_data = test_get_user_login_details_details_returned_when_user_exists_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_9_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "get_user_login_details")
+        expected_result = test_9_expected_result()[0]
+        actual_result = sut.get_user_login_details(*[arg for arg in input_parameters])
 
-        self.assertEqual(test_data.expected_result.user_id, actual_result.user_id)
-        self.assertEqual(test_data.expected_result.user_name, actual_result.user_name)
-        self.assertEqual(test_data.expected_result.password, actual_result.password)
-        self.assertEqual(test_data.expected_result.user_role, actual_result.user_role)
+        self.assertEqual(expected_result.user_id, actual_result.user_id)
+        self.assertEqual(expected_result.user_name, actual_result.user_name)
+        self.assertEqual(expected_result.password, actual_result.password)
+        self.assertEqual(str(expected_result.user_role), str(actual_result.user_role))
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_10_query_function)
     def test_check_username_exists_returns_True_if_user_exists(self):
 
-        test_data = test_check_username_exists_returns_True_if_user_exists_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_10_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "check_username_exists")
+        actual_result = sut.check_username_exists(*[arg for arg in input_parameters])
 
         self.assertTrue(actual_result)
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(Database, "query_database", test_11_query_function)
     def test_check_username_exists_returns_False_if_user_does_not_exist(self):
 
-        test_data = test_check_username_exists_returns_False_if_user_does_not_exist_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_11_method_parameters()
 
-        actual_result = _test_executor.execute_test(test_data, "check_username_exists")
+        actual_result = sut.check_username_exists(*[arg for arg in input_parameters])
 
         self.assertFalse(actual_result)
 

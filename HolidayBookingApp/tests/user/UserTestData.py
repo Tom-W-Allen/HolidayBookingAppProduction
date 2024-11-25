@@ -7,7 +7,7 @@ from datetime import datetime
 
 # <editor-fold desc="Test 1 Data">
 def test_1_method_parameters():
-    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, 2, "Test email"]
+    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, None, "Test email"]
 
 def test_1_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
@@ -16,7 +16,7 @@ def test_1_query_strings():
 def test_1_mock_parameters():
     return (
         None,
-        ["1", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
+        ["1", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", None,
          "Test email", None, None, None, "25", "0"]
     )
 
@@ -30,10 +30,9 @@ def test_1_query_function(self, query_string, arguments=None, limit=None):
         raise Exception("Unexpected query")
 # </editor-fold>
 
-
 # <editor-fold desc="Test 2 Data">
 def test_2_method_parameters():
-    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, 2, "Test email"]
+    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, None, "Test email"]
 
 def test_2_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
@@ -42,7 +41,7 @@ def test_2_query_strings():
 def test_2_mock_parameters():
     return (
         None,
-        ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
+        ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", None,
          "Test email", None, None, None, "25", "0"]
     )
 
@@ -56,6 +55,187 @@ def test_2_query_function(self, query_string, arguments=None, limit=None):
         raise Exception("Unexpected query")
 # </editor-fold>
 
+# <editor-fold desc="Test 3 Data">
+def test_3_method_parameters():
+    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, 2, "Test email"]
+
+def test_3_query_strings():
+    return ("SELECT user_id FROM users ORDER BY user_id DESC",
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+
+def test_3_mock_parameters():
+    return (
+        None,
+        ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
+         "Test email", None, None, None, "25", "0"]
+    )
+
+def test_3_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_3_query_strings()[0] and arguments == test_3_mock_parameters()[0] and limit == 1:
+        return [(1, None)]
+    elif query_string == test_3_query_strings()[1] and arguments == test_3_mock_parameters()[1] and limit is None:
+        return None
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 4 Data">
+def test_4_method_parameters():
+    return [5]
+
+def test_4_query_strings():
+    return "SELECT manager FROM users WHERE user_id = ?"
+
+def test_4_mock_parameters():
+    return ["5"]
+
+def test_4_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_4_query_strings() and arguments == test_4_mock_parameters() and limit == 1:
+        return [(1, None)]
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 5 Data">
+def test_5_method_parameters():
+    return [5]
+
+def test_5_query_strings():
+    return "SELECT manager FROM users WHERE user_id = ?"
+
+def test_5_mock_parameters():
+    return ["5"]
+
+def test_5_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_5_query_strings() and arguments == test_5_mock_parameters() and limit == 1:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 6 Data">
+def test_6_method_parameters():
+    return [UserType.admin]
+
+def test_6_query_strings():
+    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, "
+            "email_address FROM users WHERE user_role = ?")
+
+def test_6_mock_parameters():
+    return ["admin"]
+
+def test_6_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_6_query_strings() and arguments == test_6_mock_parameters() and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 7 Data">
+def test_7_method_parameters():
+    return [UserType.admin]
+
+def test_7_query_strings():
+    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, "
+            "email_address FROM users WHERE user_role = ?")
+
+def test_7_mock_parameters():
+    return ["admin"]
+
+def test_7_expected_result() -> [PublicUser]:
+    return [PublicUser(1, "Test", "admin", "Test First Name",
+                       "Test Surname", None, "Test Email")]
+
+def test_7_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_7_query_strings() and arguments == test_7_mock_parameters() and limit is None:
+        result = test_7_expected_result()[0]
+        return [(result.user_id, result.user_name, result.account_type, result.first_name,
+                 result.surname, result.manager, result.email)]
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 8 Data">
+def test_8_method_parameters():
+    return ["Test User Name"]
+
+def test_8_query_strings():
+    return "SELECT user_id, user_password, user_role, password_attempts FROM users WHERE user_name = ?"
+
+def test_8_mock_parameters():
+    return ["Test User Name"]
+
+def test_8_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_8_query_strings() and arguments == test_8_mock_parameters() and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 9 Data">
+def test_9_method_parameters():
+    return ["Test User Name"]
+
+def test_9_query_strings():
+    return "SELECT user_id, user_password, user_role, password_attempts FROM users WHERE user_name = ?"
+
+def test_9_mock_parameters():
+    return ["Test User Name"]
+
+def test_9_expected_result() -> [UserLoginData]:
+    return [UserLoginData(1, "Test User Name",
+                          "Test Password", UserType.admin, 0)]
+
+def test_9_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_9_query_strings() and arguments == test_9_mock_parameters() and limit is None:
+        result = test_9_expected_result()[0]
+        return [(result.user_id, result.password, "admin", result.password_attempts)]
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 10 Data">
+def test_10_method_parameters():
+    return ["Test User Name"]
+
+def test_10_query_strings():
+    return "SELECT user_name FROM users WHERE user_name = ?"
+
+def test_10_mock_parameters():
+    return ["Test User Name"]
+
+def test_10_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_10_query_strings() and arguments == test_10_mock_parameters() and limit is None:
+        return [("Test User Name", None)]
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 11 Data">
+def test_11_method_parameters():
+    return ["Test User Name"]
+
+def test_11_query_strings():
+    return "SELECT user_name FROM users WHERE user_name = ?"
+
+def test_11_mock_parameters():
+    return ["Test User Name"]
+
+def test_11_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_11_query_strings() and arguments == test_11_mock_parameters() and limit is None:
+        return []
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
 
 ##########################################################################################################
 
