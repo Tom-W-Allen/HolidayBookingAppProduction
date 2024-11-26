@@ -1,9 +1,9 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from HolidayBookingApp.domains.user.UserRepository import UserRepository
-from HolidayBookingApp.tests.common.TestExecution import *
-from HolidayBookingApp.tests.user.UserTestData import *
+from domains.user.UserRepository import UserRepository
+from tests.common.TestExecution import *
+from tests.user.UserTestData import *
 from persistence.Database import Database
 
 _class_under_test = "domains.user.UserRepository"
@@ -11,12 +11,12 @@ _database = MagicMock()
 _sut = UserRepository(_database)
 _test_executor = TestExecutor(_sut, _class_under_test)
 
-def mock_postgreSQL(self):
+def mock_postgre_sql(self):
     return True
 
 class UserRepositoryMethodTests(TestCase):
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_1_query_function)
     def test_add_user_sets_id_as_1_when_no_users_in_database(self):
 
@@ -28,7 +28,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.add_user(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_2_query_function)
     def test_add_user_increments_id_when_users_already_exist(self):
 
@@ -40,7 +40,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.add_user(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_3_query_function)
     def test_add_user_manager_id_set_when_not_none(self):
 
@@ -52,7 +52,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.add_user(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_4_query_function)
     def test_get_user_manager_id_returned_when_manager_exists(self):
 
@@ -64,7 +64,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.get_user_manager(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_5_query_function)
     def test_get_user_manager_negative_1_returned_when_manager_does_not_exist(self):
 
@@ -76,7 +76,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.get_user_manager(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_6_query_function)
     def test_get_user_type_details_empty_list_returned_when_no_users_exist(self):
 
@@ -88,7 +88,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.get_user_type_details(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_7_query_function)
     def test_get_user_type_details_list_returned_when_users_exist(self):
 
@@ -107,7 +107,7 @@ class UserRepositoryMethodTests(TestCase):
             self.assertEqual(expected_result[i].first_name, actual_result[i].first_name)
             self.assertEqual(expected_result[i].surname, actual_result[i].surname)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_8_query_function)
     def test_get_user_login_details_none_returned_when_no_user_exists(self):
 
@@ -119,7 +119,7 @@ class UserRepositoryMethodTests(TestCase):
         actual_result = sut.get_user_login_details(*[arg for arg in input_parameters])
         self.assertEqual(expected_result, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_9_query_function)
     def test_get_user_login_details_details_returned_when_user_exists(self):
 
@@ -135,7 +135,7 @@ class UserRepositoryMethodTests(TestCase):
         self.assertEqual(expected_result.password, actual_result.password)
         self.assertEqual(str(expected_result.user_role), str(actual_result.user_role))
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_10_query_function)
     def test_check_username_exists_returns_True_if_user_exists(self):
 
@@ -147,7 +147,7 @@ class UserRepositoryMethodTests(TestCase):
 
         self.assertTrue(actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_11_query_function)
     def test_check_username_exists_returns_False_if_user_does_not_exist(self):
 
@@ -159,7 +159,7 @@ class UserRepositoryMethodTests(TestCase):
 
         self.assertFalse(actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_12_query_function)
     def test_get_all_users_returns_users_when_users_exist(self):
 
@@ -179,7 +179,7 @@ class UserRepositoryMethodTests(TestCase):
             self.assertEqual(expected_result[i].surname, actual_result[i].surname)
             self.assertEqual(expected_result[i].manager, actual_result[i].manager)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_13_query_function)
     def test_get_all_users_returns_empty_list_when_users_do_not_exist(self):
 
@@ -190,7 +190,7 @@ class UserRepositoryMethodTests(TestCase):
 
         self.assertEqual(0, len(actual_result))
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_14_query_function)
     def test_get_public_user_details_returns_user_details_when_user_exists(self):
 
@@ -208,7 +208,7 @@ class UserRepositoryMethodTests(TestCase):
         self.assertEqual(expected_result.surname, actual_result.surname)
         self.assertEqual(expected_result.manager, actual_result.manager)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(Database, "query_database", test_15_query_function)
     def test_get_public_user_details_returns_none_when_user_does_not_exist(self):
 
@@ -220,7 +220,7 @@ class UserRepositoryMethodTests(TestCase):
 
         self.assertEqual(None, actual_result)
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(UserRepository, "get_public_user_details", test_16_get_public_user_details)
     @patch.object(Database, "query_database", test_16_query_function)
     def test_update_user_password_not_updated_when_not_requested(self):
@@ -231,7 +231,7 @@ class UserRepositoryMethodTests(TestCase):
 
         sut.update_user(*[arg for arg in input_parameters])
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(UserRepository, "get_public_user_details", test_17_get_public_user_details)
     @patch.object(Database, "query_database", test_17_query_function)
     def test_update_user_password_updated_when_requested(self):
@@ -242,7 +242,7 @@ class UserRepositoryMethodTests(TestCase):
 
         sut.update_user(*[arg for arg in input_parameters])
 
-    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(UserRepository, "get_public_user_details", test_18_get_public_user_details)
     @patch.object(Database, "query_database", test_18_query_function)
     def test_update_user_projects_and_requests_updated_when_manager_changes(self):
