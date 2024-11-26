@@ -238,34 +238,44 @@ class UserRepositoryMethodTests(TestCase):
 
         mock_database = Database()
         sut = UserRepository(mock_database)
-        input_parameters = test_16_method_parameters()
+        input_parameters = test_17_method_parameters()
 
         sut.update_user(*[arg for arg in input_parameters])
 
+    @patch.object(UserRepository, "is_postgreSQL", mock_postgreSQL)
+    @patch.object(UserRepository, "get_public_user_details", test_18_get_public_user_details)
+    @patch.object(Database, "query_database", test_18_query_function)
     def test_update_user_projects_and_requests_updated_when_manager_changes(self):
 
-        test_data = test_update_user_projects_and_requests_updated_when_manager_changes()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_18_method_parameters()
 
-        # Method is void so cannot check output
-        _test_executor.execute_test(test_data, "update_user")
+        sut.update_user(*[arg for arg in input_parameters])
 
+    @patch.object(Database, "query_database", test_19_query_function)
     def test_delete_user_user_deleted_correctly_when_user_type_is_basic(self):
 
-        test_data = test_delete_user_user_deleted_correctly_when_user_type_is_basic_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_19_method_parameters()
 
-        # Method is void so cannot check output
-        _test_executor.execute_test(test_data, "delete_user")
+        sut.delete_user(*[arg for arg in input_parameters])
 
+    @patch.object(Database, "query_database", test_20_query_function)
     def test_delete_user_user_deleted_correctly_when_user_type_is_manager(self):
 
-        test_data = test_delete_user_user_deleted_correctly_when_user_type_is_manager_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_20_method_parameters()
 
-        # Method is void so cannot check output
-        _test_executor.execute_test(test_data, "delete_user")
+        sut.delete_user(*[arg for arg in input_parameters])
 
+    @patch.object(Database, "query_database", test_21_query_function)
     def test_delete_user_user_deleted_correctly_when_user_type_is_admin(self):
 
-        test_data = test_delete_user_user_deleted_correctly_when_user_type_is_admin_data()
+        mock_database = Database()
+        sut = UserRepository(mock_database)
+        input_parameters = test_21_method_parameters()
 
-        # Method is void so cannot check output
-        _test_executor.execute_test(test_data, "delete_user")
+        sut.delete_user(*[arg for arg in input_parameters])
