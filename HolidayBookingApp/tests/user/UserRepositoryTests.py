@@ -1,10 +1,10 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from domains.user.UserRepository import UserRepository
-from tests.common.TestExecution import *
-from tests.user.UserTestData import *
-from persistence.Database import Database
+from HolidayBookingApp.domains.user.UserRepository import UserRepository
+from HolidayBookingApp.tests.common.TestExecution import *
+from HolidayBookingApp.tests.user.UserTestData import *
+from HolidayBookingApp.persistence.Database import Database
 
 _class_under_test = "domains.user.UserRepository"
 _database = MagicMock()
