@@ -1,15 +1,12 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from HolidayBookingApp.domains.user.UserRepository import UserRepository
-from HolidayBookingApp.tests.common.TestExecution import *
-from HolidayBookingApp.tests.user.UserTestData import *
-from HolidayBookingApp.persistence.Database import Database
+from domains.user.UserRepository import UserRepository
+from UserTestData import *
+from persistence.Database import Database
 
-_class_under_test = "domains.user.UserRepository"
 _database = MagicMock()
 _sut = UserRepository(_database)
-_test_executor = TestExecutor(_sut, _class_under_test)
 
 def mock_postgre_sql(self):
     return True
