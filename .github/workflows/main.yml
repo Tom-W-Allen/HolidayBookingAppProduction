@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feature/update-unit-test]
+    branches: [feature/update-unit-tests]
 
 jobs:
   ci:
