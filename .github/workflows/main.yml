@@ -16,7 +16,8 @@ jobs:
             python pip install -r  HolidayBookingApp/requirements.txt
       - name: Run Unit Tests
         run: |
-          python HolidayBookingApp/tests/user/UserRepositoryTests.py
+          cd HolidayBookingApp
+          python -m unittest UserRepositoryTests.py
       #- name: Deploy
         #env:
           #url:
