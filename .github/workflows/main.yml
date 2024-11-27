@@ -6,10 +6,22 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Application Code
+        uses: actions/checkout@v4
+      - name: Install Python and Dependencies
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          run: |
+            python pip install -r  HolidayBookingApp/requirements.txt
+      - name: Run Unit Tests
+        run: |
+          cd HolidayBookingApp
+          python -m unittest UserRepositoryTests.py
       - name: Deploy
         env:
-          url: 
+          url:
             ${{secrets.RENDER_HOOK}}
         run: |
-          curl "$url"
+          #curl "$url"
           
