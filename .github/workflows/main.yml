@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feature/update-unit-tests]
+    branches: [main, develop]
 
 jobs:
   ci:
@@ -18,10 +18,10 @@ jobs:
         run: |
           cd HolidayBookingApp
           python -m unittest UserRepositoryTests.py
-      #- name: Deploy
-        #env:
-          #url:
-            #${{secrets.RENDER_HOOK}}
-        #run: |
+      - name: Deploy
+        env:
+          url:
+            ${{secrets.RENDER_HOOK}}
+        run: |
           #curl "$url"
           
