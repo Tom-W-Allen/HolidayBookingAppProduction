@@ -23,5 +23,5 @@ jobs:
           url:
             ${{secrets.RENDER_HOOK}}
         run: |
-          #curl "$url"
+          curl "$url"
           
