@@ -15,10 +15,7 @@ jobs:
           run: |
             python pip install -r  requirements.txt
       - name: Build and Run Tests
-        run: |
-          pyb # run pybuilder
-          #cd HolidayBookingApp
-          #python -m unittest UserRepositoryTests.py
+        uses: pybuilder/build@master
       - name: Deploy
         env:
           url:
