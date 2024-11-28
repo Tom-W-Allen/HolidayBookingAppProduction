@@ -8,8 +8,7 @@ from persistence.Database import Database
 
 # For details on informal Python interfaces, see (Murphy, 2024).
 class IProjectRepository:
-    def __init__(self, connection_string: str, database: Database):
-        self._connection_string = connection_string
+    def __init__(self, database: Database):
         self._database = database
 
     def validate_project_dates(self, start_date: str, end_date: str, project_name: str) -> ProjectValidationDetails:

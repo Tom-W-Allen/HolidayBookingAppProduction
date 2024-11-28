@@ -13,6 +13,7 @@ class Database:
         self.password = password
         self.port = port
         self.connection_string = connection_string
+        self.type = None
 
     def _build_query(self, schema, query_string, limit=None, set_search_path=True):
         return ""

@@ -5,6 +5,7 @@ class SqliteDatabase(Database):
     def __init__(self, connection_string):
         super().__init__(connection_string=connection_string)
         self.connection_string = connection_string
+        self.type = "SQLite"
 
     def _build_query(self, schema, query_string, limit = None):
         if limit is None:
