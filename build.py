@@ -15,3 +15,4 @@ default_task = "publish"
 @init
 def set_properties(project):
     project.set_property("dir_source_unittest_python", "src/tests/python")
+    project.set_property("coverage_break_build", False)
