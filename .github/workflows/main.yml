@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feature/Implement-pybuilder]
+    branches: [main, develop]
 
 jobs:
   ci:
