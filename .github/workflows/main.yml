@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: 3.12
           run: |
-            python pip install -r  HolidayBookingApp/requirements.txt
+            python pip install -r  requirements.txt
       - name: Build and Run Tests
         run: |
           pyb # run pybuilder
