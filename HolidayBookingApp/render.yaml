@@ -1,0 +1,26 @@
+databases:
+- name: Holiday-Booking-Application-Database
+  plan: free
+  region: frankfurt
+services:
+- type: web
+  name: HolidayBookingApp
+  runtime: python
+  repo: https://github.com/Tom-W-Allen/HolidayBookingAppProduction
+  branch: develop
+  plan: free
+  envVars:
+  - key: .env
+    sync: false
+  - key: PORT
+    sync: false
+  - key: FLASK_ENV
+    sync: false
+  - key: FLASK_APP
+    sync: false
+  region: frankfurt
+  buildCommand: pip install -r requirements.txt
+  startCommand: python application.py
+  autoDeploy: false
+  rootDir: HolidayBookingApp
+version: "1"
