@@ -7,13 +7,10 @@ from mappers.CreateProjectPageMapper import CreateProjectPageMapper
 from persistence.DatabaseFactory import get_database
 
 create_project_blueprint = Blueprint('create_project_blueprint', __name__)
-
-connection_string = "persistence/HolidayBookingDatabase.db"
-
-database = get_database(True)
+database = get_database()
 
 user_repository = UserRepository(database)
-project_repository = ProjectRepository(connection_string, database)
+project_repository = ProjectRepository(database)
 
 create_project_page_mapper = CreateProjectPageMapper(user_repository, project_repository)
 

@@ -8,6 +8,9 @@ from common.DateFunctions import find_overlapping_dates
 from domains.request.RequestRepositoryInterface import IRequestRepository
 from persistence.Database import Database
 
+from common.DateFunctions import format_database_date
+
+
 class RequestRepository(IRequestRepository):
     def __init__(self, database: Database):
         super().__init__(database)
@@ -22,8 +25,8 @@ class RequestRepository(IRequestRepository):
             message = "Please select a date from both fields."
             return RequestValidationDetails(state, message, valid_holidays)
 
-        converted_start_date = datetime.strptime(start_date, "%Y-%m-%d")
-        converted_end_date = datetime.strptime(end_date, "%Y-%m-%d")
+        converted_start_date = format_database_date(start_date)
+        converted_end_date = format_database_date(end_date)
 
         today = datetime(date.today().year, date.today().month, date.today().day)
 
@@ -117,8 +120,8 @@ class RequestRepository(IRequestRepository):
             request_list.append(Request(row[0],
                                         row[1],
                                         row[2],
-                                        datetime.strptime(row[3], "%Y-%m-%d"),
-                                        datetime.strptime(row[4], "%Y-%m-%d"),
+                                        format_database_date(row[3]),
+                                        format_database_date(row[4]),
                                         row[5],
                                         'pending'))
 
@@ -141,8 +144,8 @@ class RequestRepository(IRequestRepository):
             request_list.append(Request(row[0],
                                         row[1],
                                         row[2],
-                                        datetime.strptime(row[3], "%Y-%m-%d"),
-                                        datetime.strptime(row[4], "%Y-%m-%d"),
+                                        format_database_date(row[3]),
+                                        format_database_date(row[4]),
                                         row[5],
                                         row[6]))
 
@@ -202,8 +205,8 @@ class RequestRepository(IRequestRepository):
             request = Request(record[0],
                               "",
                               "",
-                              datetime.strptime(record[1], "%Y-%m-%d"),
-                              datetime.strptime(record[2], "%Y-%m-%d"),
+                              format_database_date(record[1]),
+                              format_database_date(record[2]),
                               0,
                               record[5])
 

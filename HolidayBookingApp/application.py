@@ -11,6 +11,7 @@ from domains.user.UserRepository import UserRepository
 from mappers.LoginPageMapper import LoginPageMapper
 from persistence.CreateSqliteDatabase import set_up_sqlite_database
 from persistence.DatabaseFactory import get_database
+from persistence.SetupPostgreSQLDatabase import setup_postgresql_database
 
 from blueprints.HomeBlueprint import home_blueprint
 from blueprints.RequestBlueprint import request_blueprint
@@ -18,6 +19,8 @@ from blueprints.ApproveBlueprint import approve_blueprint
 from blueprints.CreateProjectBlueprint import create_project_blueprint
 from blueprints.ProjectReviewBlueprint import project_review_blueprint
 from blueprints.EditProfileBlueprint import edit_profile_blueprint
+from blueprints.ForgottenPasswordBlueprint import forgotten_password_blueprint
+from blueprints.ResetPasswordBlueprint import reset_password_blueprint
 
 # login_manager object set up in accordance with Flask-Login (2024) documentation.
 login_manager = LoginManager()
@@ -31,11 +34,13 @@ application.register_blueprint(approve_blueprint)
 application.register_blueprint(create_project_blueprint)
 application.register_blueprint(project_review_blueprint)
 application.register_blueprint(edit_profile_blueprint)
+application.register_blueprint(forgotten_password_blueprint)
+application.register_blueprint(reset_password_blueprint)
 
 login_manager.init_app(application)
 login_manager.login_view = 'login'
 
-database = get_database(True)
+database = get_database()
 
 user_repository = UserRepository(database)
 
@@ -71,7 +76,8 @@ def login():
     return render_template("Login.html",
                            state=str(page_data.state),
                            message=page_data.message,
-                           signing_up=page_data.signing_up)
+                           signing_up=page_data.signing_up,
+                           isProduction=user_repository.is_postgreSQL())
 
 load_dotenv()
 environment = getenv("ENVIRONMENT")
@@ -79,6 +85,8 @@ environment = getenv("ENVIRONMENT")
 if __name__ == '__main__':
     if environment == "Production" or environment == "Development":
         # Make available across all possible addresses when deployed on render
+        database = get_database()
+        setup_postgresql_database(database)
         serve(application, host='0.0.0.0', port=5000)
     else:
         # Make sure that Sqlite database is set up correctly with example data when run locally (but only if
