@@ -5,8 +5,6 @@ from domains.user.UserRepository import UserRepository
 from UserTestData import *
 from persistence.Database import Database
 
-_database = MagicMock()
-_sut = UserRepository(_database)
 
 def mock_postgre_sql(self):
     return True

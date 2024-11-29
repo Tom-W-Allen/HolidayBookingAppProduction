@@ -1,12 +1,171 @@
-from HolidayBookingApp.tests.common.models.TestData import TestData
 from datetime import datetime, date, timedelta
-from HolidayBookingApp.domains.project.models.Project import Project
-from HolidayBookingApp.domains.project.models.ProjectMember import ProjectMember
-from HolidayBookingApp.domains.user.models.PublicUser import PublicUser
+from src.main.python.domains.project.models.Project import Project
+from src.main.python.domains.project.models.ProjectMember import ProjectMember
+from src.main.python.domains.user.models.PublicUser import PublicUser
 
 _current_date = datetime(date.today().year, date.today().month, date.today().day)
 
+valid_test_start_date = datetime.strftime(_current_date + timedelta(10), "%Y-%m-%d")
+valid_test_end_date = datetime.strftime(_current_date + timedelta(40), "%Y-%m-%d")
 
+def find_project_name(x, y):
+    return None
+
+def find_project_name_exists(x, y):
+    return "Test Project"
+
+# <editor-fold desc="Test 1 Data">
+def test_1_method_parameters():
+    return [valid_test_start_date, valid_test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 2 Data">
+def test_2_method_parameters():
+    test_start_date = _current_date - timedelta(1)
+    test_end_date = _current_date + timedelta(5)
+
+    test_start_date = datetime.strftime(test_start_date, "%Y-%m-%d")
+    test_end_date = datetime.strftime(test_end_date, "%Y-%m-%d")
+
+    return [test_start_date, test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 3 Data">
+def test_3_method_parameters():
+    current_weekday = _current_date.isoweekday()
+    # Find days from today to next Saturday
+    advance = 7 - (current_weekday - 6) if current_weekday > 5 else 6 - current_weekday
+    test_start_date = _current_date + timedelta(advance)
+    test_start_date = datetime.strftime(test_start_date, "%Y-%m-%d")
+    test_end_date = _current_date + timedelta(advance + 1)
+    test_end_date = datetime.strftime(test_end_date, "%Y-%m-%d")
+
+    return [test_start_date, test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 4 Data">
+def test_4_method_parameters():
+    test_start_date = _current_date + timedelta(10)
+    test_end_date = _current_date + timedelta(5)
+
+    test_start_date = datetime.strftime(test_start_date, "%Y-%m-%d")
+    test_end_date = datetime.strftime(test_end_date, "%Y-%m-%d")
+
+    return [test_start_date, test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 5 Data">
+def test_5_method_parameters():
+    test_start_date = ""
+    test_end_date = datetime.strftime(_current_date, "%Y-%m-%d")
+
+    return [test_start_date, test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 6 Data">
+def test_6_method_parameters():
+    test_start_date = datetime.strftime(_current_date, "%Y-%m-%d")
+    test_end_date = ""
+
+    return [test_start_date, test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 7 Data">
+def test_7_method_parameters():
+    test_start_date = _current_date + timedelta(10)
+    test_end_date = _current_date + timedelta(40)
+
+    test_start_date = datetime.strftime(test_start_date, "%Y-%m-%d")
+    test_end_date = datetime.strftime(test_end_date, "%Y-%m-%d")
+
+    return [test_start_date, test_end_date, "Test Project"]
+# </editor-fold>
+
+# <editor-fold desc="Test 8 Data">
+def test_8_method_parameters():
+    return ["Test Project", valid_test_start_date, valid_test_end_date, 5]
+
+def test_8_query_strings():
+    return ("SELECT project_id FROM projects ORDER BY project_id DESC",
+            "SELECT project_id FROM employee_projects ORDER BY project_id DESC",
+            "INSERT INTO projects VALUES (?, ?, ?, ?, ?)")
+
+def test_8_mock_parameters():
+    return (
+        None,
+        None,
+        ["1", "Test Project", valid_test_start_date, valid_test_end_date, "5"]
+    )
+
+def test_8_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_8_query_strings()[0] and arguments == test_8_mock_parameters()[0] and limit == 1:
+        return []
+    elif query_string == test_8_query_strings()[1] and arguments == test_8_mock_parameters()[1] and limit == 1:
+        return []
+    elif query_string == test_8_query_strings()[2] and arguments == test_8_mock_parameters()[2] and limit is None:
+        return None
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 9 Data">
+def test_9_method_parameters():
+    return ["Test Project", valid_test_start_date, valid_test_end_date, 5]
+
+def test_9_query_strings():
+    return ("SELECT project_id FROM projects ORDER BY project_id DESC",
+            "SELECT project_id FROM employee_projects ORDER BY project_id DESC",
+            "INSERT INTO projects VALUES (?, ?, ?, ?, ?)")
+
+def test_9_mock_parameters():
+    return (
+        None,
+        None,
+        ["11", "Test Project", valid_test_start_date, valid_test_end_date, "5"]
+    )
+
+def test_9_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_9_query_strings()[0] and arguments == test_9_mock_parameters()[0] and limit == 1:
+        return [(10, None)]
+    elif query_string == test_9_query_strings()[1] and arguments == test_9_mock_parameters()[1] and limit == 1:
+        return [(5, None)]
+    elif query_string == test_9_query_strings()[2] and arguments == test_9_mock_parameters()[2] and limit is None:
+        return None
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+# <editor-fold desc="Test 10 Data">
+def test_10_method_parameters():
+    return ["Test Project", valid_test_start_date, valid_test_end_date, 5]
+
+def test_10_query_strings():
+    return ("SELECT project_id FROM projects ORDER BY project_id DESC",
+            "SELECT project_id FROM employee_projects ORDER BY project_id DESC",
+            "INSERT INTO projects VALUES (?, ?, ?, ?, ?)")
+
+def test_10_mock_parameters():
+    return (
+        None,
+        None,
+        ["11", "Test Project", valid_test_start_date, valid_test_end_date, "5"]
+    )
+
+def test_10_query_function(self, query_string, arguments=None, limit=None):
+
+    if query_string == test_9_query_strings()[0] and arguments == test_9_mock_parameters()[0] and limit == 1:
+        return []
+    elif query_string == test_9_query_strings()[1] and arguments == test_9_mock_parameters()[1] and limit == 1:
+        return [(10, None)]
+    elif query_string == test_9_query_strings()[2] and arguments == test_9_mock_parameters()[2] and limit is None:
+        return None
+    else:
+        raise Exception("Unexpected query")
+# </editor-fold>
+
+##################################################################################################################
 def test_create_project_project_id_set_as_1_if_no_other_projects_exist_data():
     method_parameters = ["Test project name",
                          datetime(2020, 12, 1),

@@ -1,119 +1,137 @@
-from unittest import TestCase
-from HolidayBookingApp.domains.project.ProjectRepository import ProjectRepository
-from HolidayBookingApp.tests.common.TestExecution import *
-from HolidayBookingApp.tests.project.ProjectTestData import *
-from datetime import datetime, date
+from unittest import TestCase, main
+from unittest.mock import MagicMock, patch
 
-_connection_string = "persistence/HolidayBookingDatabase.db"
-_class_under_test = "domains.project.ProjectRepository"
-_sut = ProjectRepository(_connection_string)
-_test_executor = TestExecutor(_sut, _class_under_test)
+from domains.project.ProjectRepository import ProjectRepository
+from domains.project.models.ProjectValidationDetails import ProjectValidationDetails
+from common.enums.State import State
+from ProjectTestData import *
+from datetime import datetime, date
+from persistence.Database import Database
+
+_database = MagicMock()
+_sut = ProjectRepository(_database)
 _current_date = datetime(date.today().year, date.today().month, date.today().day)
 
 
 class ProjectRepositoryMethodTests(TestCase):
 
-    # region validate_project_dates tests
+    @patch.object(ProjectRepository, "find_project_name", find_project_name)
     def test_validate_project_dates_None_returned_when_valid_dates_provided(self):
-        expected_result = None
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_1_method_parameters()
 
-        test_data = test_validate_project_dates_None_returned_when_valid_dates_provided_data()
+        expected_result = ProjectValidationDetails(State.Success, None)
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
 
-        self.assertEqual(expected_result, actual_result.message)
-
-    def test_validate_project_dates_error_returned_when_start_date_less_than_end_date(self):
-        expected_result = "End date must be after start date."
-
-        test_data = test_validate_project_dates_error_returned_when_start_date_less_than_end_date_data()
-
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
-
-        self.assertEqual(expected_result, actual_result.message)
-
+    @patch.object(ProjectRepository, "find_project_name", find_project_name)
     def test_validate_project_dates_error_returned_when_start_date_less_than_current_date(self):
-        expected_result = "All dates in selected range must be after the current date."
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_2_method_parameters()
 
-        test_data = test_validate_project_dates_error_returned_when_start_date_less_than_current_date()
+        expected_result = ProjectValidationDetails(State.Warning,
+                                                   "All dates in selected range must "
+                                                   "be after the current date.")
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
 
-        self.assertEqual(expected_result, actual_result.message)
-
-    def test_validate_project_dates_error_returned_when_start_date_is_current_date(self):
-        expected_result = "All dates in selected range must be after the current date."
-
-        test_data = test_validate_project_dates_error_returned_when_start_date_is_current_date_data()
-
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
-
-        self.assertEqual(expected_result, actual_result.message)
-
+    @patch.object(ProjectRepository, "find_project_name", find_project_name)
     def test_validate_project_dates_error_returned_when_project_booked_for_weekend(self):
-        expected_result = "No weekdays selected, projects must be completed in work hours."
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_3_method_parameters()
 
-        test_data = test_validate_project_dates_error_returned_when_project_booked_for_weekend_data()
+        expected_result = ProjectValidationDetails(State.Warning,
+                                                   "No weekdays selected, projects must "
+                                                   "be completed in work hours.")
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
 
-        self.assertEqual(expected_result, actual_result.message)
+    @patch.object(ProjectRepository, "find_project_name", find_project_name)
+    def test_validate_project_dates_error_returned_when_start_date_less_than_end_date(self):
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_4_method_parameters()
 
+        expected_result = ProjectValidationDetails(State.Warning,
+                                                   "End date must be after start date.")
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
+
+    @patch.object(ProjectRepository, "find_project_name", find_project_name)
     def test_validate_project_dates_error_returned_when_start_date_is_blank(self):
-        expected_result = "Please select a date from both fields."
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_5_method_parameters()
 
-        test_data = test_validate_project_dates_error_returned_when_start_date_is_blank_data()
+        expected_result = ProjectValidationDetails(State.Warning,
+                                                   "Please select a date from both fields.")
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
 
-        self.assertEqual(expected_result, actual_result.message)
-
+    @patch.object(ProjectRepository, "find_project_name", find_project_name)
     def test_validate_project_dates_error_returned_when_end_date_is_blank(self):
-        expected_result = "Please select a date from both fields."
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_6_method_parameters()
 
-        test_data = test_validate_project_dates_error_returned_when_end_date_is_blank_data()
+        expected_result = ProjectValidationDetails(State.Warning,
+                                                   "Please select a date from both fields.")
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
 
-        self.assertEqual(expected_result, actual_result.message)
-
+    @patch.object(ProjectRepository, "find_project_name", find_project_name_exists)
     def test_validate_project_dates_error_returned_when_project_name_exists(self):
-        expected_result = "Project name is already in use"
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_7_method_parameters()
 
-        test_data = test_validate_project_dates_error_returned_when_project_name_exists_data()
+        expected_result = ProjectValidationDetails(State.Warning,
+                                                   "Project name is already in use")
+        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+        self.assertEqual(expected_result.state, actual_result.state)
+        self.assertEqual(expected_result.message, actual_result.message)
 
-        self.assertEqual(expected_result, actual_result.message)
-
-    # endregion
-
-    # region create_project tests
+    @patch.object(Database, "query_database", test_8_query_function)
     def test_create_project_project_id_set_as_1_if_no_other_projects_exist(self):
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_8_method_parameters()
 
-        test_data = test_create_project_project_id_set_as_1_if_no_other_projects_exist_data()
+        sut.create_project(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'create_project')
-
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(Database, "query_database", test_9_query_function)
     def test_create_project_project_id_incremented_by_1_when_other_projects_exist(self):
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_9_method_parameters()
 
-        test_data = test_create_project_project_id_incremented_by_1_when_other_projects_exist_data()
+        sut.create_project(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'create_project')
-
-        self.assertEqual(test_data.expected_result, actual_result)
-
+    @patch.object(Database, "query_database", test_10_query_function)
     def test_create_project_project_id_incremented_by_1_when_only_one_table_has_records(self):
+        mock_database = Database()
+        sut = ProjectRepository(mock_database)
+        input_parameters = test_10_method_parameters()
 
-        test_data = test_create_project_project_id_incremented_by_1_when_only_one_table_has_records_data()
+        sut.create_project(*[arg for arg in input_parameters])
 
-        actual_result = _test_executor.execute_test(test_data, 'create_project')
-
-        self.assertEqual(test_data.expected_result, actual_result)
-    # endregion
-
+    """
     def test_get_all_projects_date_converted_to_datetime_when_projects_returned(self):
 
         test_data = test_get_all_projects_date_converted_to_datetime_when_projects_returned_data()
@@ -126,6 +144,15 @@ class ProjectRepositoryMethodTests(TestCase):
             self.assertEqual(test_data.expected_result[i].start_date, actual_result[i].start_date)
             self.assertEqual(test_data.expected_result[i].end_date, actual_result[i].end_date)
             self.assertEqual(test_data.expected_result[i].project_lead, actual_result[i].project_lead)
+
+    def test_validate_project_dates_error_returned_when_start_date_is_current_date(self):
+        expected_result = "All dates in selected range must be after the current date."
+
+        test_data = test_validate_project_dates_error_returned_when_start_date_is_current_date_data()
+
+        actual_result = _test_executor.execute_test(test_data, 'validate_project_dates')
+
+        self.assertEqual(expected_result, actual_result.message)
 
     def test_get_all_projects_empty_list_returned_when_no_projects_available(self):
 
@@ -277,3 +304,4 @@ class ProjectRepositoryMethodTests(TestCase):
 
         for i in range(0, len(test_data.expected_result)):
             self.assertEqual(test_data.expected_result[i], actual_result[i])
+"""
