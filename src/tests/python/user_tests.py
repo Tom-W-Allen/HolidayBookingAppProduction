@@ -2,7 +2,7 @@ from unittest import TestCase, main
 from unittest.mock import MagicMock, patch
 
 from domains.user.UserRepository import UserRepository
-from UserTestData import *
+from data.UserTestData import *
 from persistence.Database import Database
 
 
@@ -274,7 +274,3 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_21_method_parameters()
 
         sut.delete_user(*[arg for arg in input_parameters])
-
-
-if __name__ == '__main__':
-    main()

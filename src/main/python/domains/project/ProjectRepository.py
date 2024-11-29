@@ -167,7 +167,7 @@ class ProjectRepository(IProjectRepository):
         # Find users who have the project lead as their manager and do not have employee_project records with
         # a leave date later than today (which indicates they are currently enrolled on the project).
         available_employees = self._database.query_database(
-            "SELECT user_id, user_name, user_role, first_name, surname, manager "
+            "SELECT user_id, user_name, user_role, first_name, surname, manager, email "
             "FROM users AS u1 "
             "WHERE "
             "manager = ? AND "
@@ -185,7 +185,8 @@ class ProjectRepository(IProjectRepository):
                                            employee[2],
                                            employee[3],
                                            employee[4],
-                                           employee[5])
+                                           employee[5],
+                                           employee[6])
             available_employees_list.append(selected_employee)
 
         return available_employees_list
@@ -284,8 +285,9 @@ class ProjectRepository(IProjectRepository):
     def get_project_overlap_holidays(self, user_id: int, project_id: int) -> "list[datetime]":
 
         project_dates = self._database.query_database("SELECT start_date, end_date FROM projects WHERE "
-                                                      "project_id = ? LIMIT 1",
-                                                      arguments=[str(project_id)])
+                                                      "project_id = ?",
+                                                      arguments=[str(project_id)],
+                                                      limit=1)
 
         converted_project_start_date = format_database_date(project_dates[0][0])
         converted_project_end_date = format_database_date(project_dates[0][1])
