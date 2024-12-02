@@ -10,13 +10,13 @@ def test_1_method_parameters():
 
 def test_1_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
-            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 def test_1_mock_parameters():
     return (
         None,
         ["1", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", None,
-         "Test email", None, None, None, "25", "0"]
+         "Test email", None, None, None, "25", "0", "Y"]
     )
 
 def test_1_query_function(self, query_string, arguments=None, limit=None):
@@ -35,13 +35,13 @@ def test_2_method_parameters():
 
 def test_2_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
-            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 def test_2_mock_parameters():
     return (
         None,
         ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", None,
-         "Test email", None, None, None, "25", "0"]
+         "Test email", None, None, None, "25", "0", "Y"]
     )
 
 def test_2_query_function(self, query_string, arguments=None, limit=None):
@@ -60,13 +60,13 @@ def test_3_method_parameters():
 
 def test_3_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
-            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 def test_3_mock_parameters():
     return (
         None,
         ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
-         "Test email", None, None, None, "25", "0"]
+         "Test email", None, None, None, "25", "0", "Y"]
     )
 
 def test_3_query_function(self, query_string, arguments=None, limit=None):

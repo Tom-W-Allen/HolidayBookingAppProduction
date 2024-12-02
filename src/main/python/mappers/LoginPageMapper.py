@@ -8,7 +8,7 @@ from flask_login import login_user
 from domains.user.models.UserSession import UserSession
 import hashlib
 
-from src.main.python.common.enums.State import State
+from common.enums.State import State
 
 
 class LoginPageMapper:
