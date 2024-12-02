@@ -28,6 +28,8 @@ class EditProfilePageMapper(BaseMapper):
 
         user_details = self.user_repository.get_public_user_details(session["_user_id"])
 
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
         return EditProfilePageData(State.Normal,
                                    None,
                                    session["account_type"],
@@ -37,8 +39,10 @@ class EditProfilePageMapper(BaseMapper):
                                    manager_list,
                                    False,
                                    0,
+                                   0,
                                    int(session["_user_id"]),
-                                   user_details.manager)
+                                   user_details.manager,
+                                   admin_approved)
 
     def map_select_user(self) -> EditProfilePageData:
         employee_list = self.user_repository.get_all_users()
@@ -50,6 +54,8 @@ class EditProfilePageMapper(BaseMapper):
         manager_list = [] if manager_account_details.account_type != 'basic' \
             else self.user_repository.get_user_type_details(UserType.manager)
 
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
         return EditProfilePageData(State.Normal,
                                    None,
                                    session["account_type"],
@@ -59,8 +65,10 @@ class EditProfilePageMapper(BaseMapper):
                                    manager_list,
                                    False,
                                    0,
+                                   0,
                                    int(session["_user_id"]),
-                                   user_details.manager)
+                                   user_details.manager,
+                                   admin_approved)
 
     def map_delete_user(self) -> EditProfilePageData:
         user_id = int(request.form["selected user"])
@@ -120,6 +128,8 @@ class EditProfilePageMapper(BaseMapper):
         # Wait until end of processing to get full list of employees in order to account for one being deleted.
         employee_list = self.user_repository.get_all_users()
 
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
         return EditProfilePageData(state,
                                    message,
                                    session["account_type"],
@@ -129,8 +139,67 @@ class EditProfilePageMapper(BaseMapper):
                                    manager_list,
                                    False,
                                    button_presses,
+                                   0,
                                    int(session["_user_id"]),
-                                   user_details.manager)
+                                   user_details.manager,
+                                   admin_approved)
+
+    def map_approve_user(self) -> EditProfilePageData:
+        user_id = int(request.form["selected user"])
+
+        # Admin may be deleting another admin or manager's account (in which case there is no manager list).
+        # Determine manager value based on what is selected in the user selection filter.
+        manager_account_details = self.get_account_and_manager_details(user_id)
+
+        manager_list = [] if manager_account_details.account_type != 'basic' \
+            else self.user_repository.get_user_type_details(UserType.manager)
+
+        user_details = self.user_repository.get_public_user_details(user_id)
+
+        if request.form["choice"] == 'Cancel':
+            state = State.Normal
+            message = None
+            button_presses = 0
+
+        elif int(request.form["approve button presses"]) == 1:
+            state = State.Warning
+
+            message = (f"You are about to approve the ADMIN account of {user_details.user_name}. "
+                       f"Please press 'Approve Account' again to confirm")
+
+            button_presses = 1
+        else:
+            user_name = self.user_repository.get_public_user_details(int(request.form["selected user"])).user_name
+
+            self.user_repository.approve_user(user_details.user_id)
+
+            # change user details to current admin
+            user_details = self.user_repository.get_public_user_details(session["_user_id"])
+
+            state = State.Success
+            message = f"You have approved the ADMIN account with username: {user_name}."
+            button_presses = 0
+            # When approved, view will revert back to user who is an admin - make sure manager list
+            # is empty, so it is not displayed on screen
+            manager_list = []
+
+        # Wait until end of processing to get full list of employees in order to account for one being deleted.
+        employee_list = self.user_repository.get_all_users()
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
+        return EditProfilePageData(state,
+                                   message,
+                                   session["account_type"],
+                                   user_details.user_id,
+                                   employee_list,
+                                   user_details,
+                                   manager_list,
+                                   False,
+                                   0,
+                                   button_presses,
+                                   int(session["_user_id"]),
+                                   user_details.manager,
+                                   admin_approved)
 
     def map_confirm_changes(self) -> EditProfilePageData:
         employee_list = [] if session["account_type"] != 'admin' else self.user_repository.get_all_users()
@@ -170,6 +239,8 @@ class EditProfilePageMapper(BaseMapper):
             if request.form["password"] != "":
                 self.user_repository.store_proposed_password(user_id, request.form["password"])
 
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
         return EditProfilePageData(validation.state,
                                    validation.message,
                                    session["account_type"],
@@ -179,8 +250,10 @@ class EditProfilePageMapper(BaseMapper):
                                    manager_list,
                                    approval_required,
                                    0,
+                                   0,
                                    int(session["_user_id"]),
-                                   manager)
+                                   manager,
+                                   admin_approved)
 
     def map_execute_changes(self) -> EditProfilePageData:
         user_id = int(request.form["selected user"])
@@ -212,6 +285,8 @@ class EditProfilePageMapper(BaseMapper):
         user_details = self.user_repository.get_public_user_details(user_id)
         employee_list = [] if session["account_type"] != 'admin' else self.user_repository.get_all_users()
 
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
         return EditProfilePageData(state,
                                    message,
                                    session["account_type"],
@@ -221,8 +296,10 @@ class EditProfilePageMapper(BaseMapper):
                                    manager_list,
                                    False,
                                    0,
+                                   0,
                                    int(session["_user_id"]),
-                                   user_details.manager)
+                                   user_details.manager,
+                                   admin_approved)
 
     def map_error(self) -> EditProfilePageData:
         try:
@@ -237,6 +314,8 @@ class EditProfilePageMapper(BaseMapper):
 
             self.user_repository.clear_password_change(user_id)
 
+            admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
         except Exception:
             user_id = session["_user_id"]
             employee_list = []
@@ -248,6 +327,7 @@ class EditProfilePageMapper(BaseMapper):
                                       None,
                                       None,
                                       None)
+            admin_approved = "Y"
 
         message = "Something went wrong and your request could not be processed. Please refresh and try again."
         session["refresh_page"] = "yes"
@@ -260,8 +340,10 @@ class EditProfilePageMapper(BaseMapper):
                                    manager_list,
                                    False,
                                    0,
+                                   0,
                                    int(session["_user_id"]),
-                                   0)
+                                   0,
+                                   admin_approved)
 
     def get_account_and_manager_details(self, user_id: int) -> ManagerAccountDetails:
         if session["account_type"] == 'admin':

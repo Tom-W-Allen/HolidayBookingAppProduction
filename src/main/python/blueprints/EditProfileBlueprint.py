@@ -42,6 +42,8 @@ def edit_profile():
                     page_data = edit_profile_page_mapper.map_execute_changes()
                 case "delete account":
                     page_data = edit_profile_page_mapper.map_delete_user()
+                case "approve account":
+                    page_data = edit_profile_page_mapper.map_approve_user()
                 case "log out":
                     page_data = edit_profile_page_mapper.map_logout()
                 case _:
@@ -62,6 +64,8 @@ def edit_profile():
                            manager_list=page_data.manager_list,
                            approval_required=page_data.approval_required,
                            delete_button_presses=page_data.delete_button_presses,
+                           approve_button_presses=page_data.approval_button_presses,
+                           admin_approved = page_data.admin_approved,
                            base_id=page_data.base_id,
                            current_page='edit profile',
                            selected_manager=page_data.selected_manager,

@@ -83,12 +83,14 @@ class UserRepository(IUserRepository):
         top_id = self._database.query_database("SELECT user_id FROM users ORDER BY user_id DESC",
                                                limit=1)
 
+        admin_approved = "N" if account_type == "admin" else "Y"
+
         record_id = 1 if len(top_id) < 1 else int(top_id[0][0]) + 1
 
         # only store email addresses if they are going to the encrypted server
         email_entry = email if self.is_postgreSQL() else None
 
-        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                       arguments=
                                         [str(record_id),
                                          str(username),
@@ -103,7 +105,8 @@ class UserRepository(IUserRepository):
                                          None,
                                          None,
                                          str(holidays),
-                                         str(0)]) # No password attempts yet as account was just created
+                                         str(0), # No password attempts yet as account was just created
+                                         admin_approved])
 
     def get_user_id_from_email(self, email_address: str) -> int:
 
@@ -384,3 +387,15 @@ class UserRepository(IUserRepository):
                                       [str(new_attempts),
                                        str(user_id)])
 
+    def approve_user(self, user_id: int) -> None:
+        self._database.query_database("UPDATE users SET admin_approved = 'Y' WHERE user_id = ?",
+                                      arguments=[str(user_id)])
+
+    def get_admin_approved(self, user_id: int) -> str:
+        admin_approved = self._database.query_database("SELECT admin_approved FROM users WHERE user_id = ?",
+                                                       arguments=[str(user_id)])
+
+        if len(admin_approved) > 0:
+            return admin_approved[0][0]
+        else:
+            raise Exception("user profile has invalid approval")

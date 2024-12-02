@@ -18,7 +18,8 @@ CREATE TABLE users (
 	reset_expiry_date DATE,
 	reset_expiry_time TIME,
 	holidays_remaining INT NOT NULL,
-	password_attempts INT NOT NULL
+	password_attempts INT NOT NULL,
+	admin_approved CHAR NOT NULL
 );
                    
 CREATE TABLE requests (

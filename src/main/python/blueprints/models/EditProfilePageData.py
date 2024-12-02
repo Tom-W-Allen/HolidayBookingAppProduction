@@ -16,8 +16,10 @@ class EditProfilePageData(BasePageData):
                  manager_list: "list[PublicUser]",
                  approval_required: bool,
                  delete_button_presses: int,
+                 approval_button_presses: int,
                  base_id: int,
                  selected_manager: int,
+                 admin_approved: str,
                  redirect=None,
                  logout_presses=0):
         super().__init__(redirect, logout_presses)
@@ -30,5 +32,7 @@ class EditProfilePageData(BasePageData):
         self.manager_list = manager_list
         self.approval_required = approval_required
         self.delete_button_presses = delete_button_presses
+        self.approval_button_presses = approval_button_presses
         self.base_id = base_id
         self.selected_manager = selected_manager
+        self.admin_approved = admin_approved

@@ -20,7 +20,7 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     </form>
 {% endif %}
-{% if account_type == 'admin' and user_details.user_id != base_id %}
+{% if account_type == 'admin' and user_details.user_id != base_id and admin_approved == "Y" %}
     <form method="POST">
         <div class="account_button_container">
             <input type="submit" name="choice" value="Delete Account" class="rejection_button">
@@ -30,6 +30,19 @@
         </div>
         <input type="hidden" name="form name" value="delete account">
         <input type="hidden" name="delete button presses" value="{{delete_button_presses + 1}}">
+        <input type="hidden" name="selected user" value="{{selected_user}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+{% elif account_type == 'admin' and user_details.user_id != base_id and admin_approved == "N" %}
+    <form method="POST">
+        <div class="account_button_container">
+            <input type="submit" name="choice" value="Approve Account" class="approval_button">
+            {% if approve_button_presses == 1 %}
+                <input type="submit" name="choice" value="Cancel" class="cancel_button">
+            {% endif %}
+        </div>
+        <input type="hidden" name="form name" value="approve account">
+        <input type="hidden" name="approve button presses" value="{{approve_button_presses + 1}}">
         <input type="hidden" name="selected user" value="{{selected_user}}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     </form>

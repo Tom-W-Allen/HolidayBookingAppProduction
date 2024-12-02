@@ -8,6 +8,8 @@ from flask_login import login_user
 from domains.user.models.UserSession import UserSession
 import hashlib
 
+from common.enums.State import State
+
 
 class LoginPageMapper:
 
@@ -26,6 +28,15 @@ class LoginPageMapper:
         message = None
 
         user_details = self.user_repository.get_user_login_details(request.form["User Name"])
+        admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
+
+        # Do not allow admins to signup without approval!
+        if admin_approved != "Y":
+            message = "Your account is currently locked pending admin approval"
+            return  LoginPageData(login_redirect,
+                                  State.Warning,
+                                  message,
+                                  False)
 
         if user_details.password_attempts == 3:
             message = ("You have entered an incorrect password three times. Please click on the link below to "
