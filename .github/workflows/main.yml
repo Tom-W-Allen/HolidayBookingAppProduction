@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feature/update-pybuilder]
+    branches: [main, develop]
 
 jobs:
   ci:
@@ -15,5 +15,5 @@ jobs:
           url:
             ${{secrets.RENDER_HOOK}}
         run: |
-          #curl "$url"
+          curl "$url"
           
