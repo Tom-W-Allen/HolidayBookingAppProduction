@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: 3.12
           run: |
-            python pip install -r requirements.txt
+            python -m pip install -r requirements.txt
       - name: Test Directory
         run: |
           pwd
