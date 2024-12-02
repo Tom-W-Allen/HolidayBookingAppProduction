@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main, develop]
+    branches: [feature/correct-build-pipeline]
 
 jobs:
   ci:
@@ -13,7 +13,8 @@ jobs:
         with:
           python-version: 3.12
           run: |
-            python pip install -r  requirements.txt
+            ls
+            python pip install -r requirements.txt
       - name: Build and Run Tests
         uses: pybuilder/build@master
       - name: Deploy
@@ -21,5 +22,5 @@ jobs:
           url:
             ${{secrets.RENDER_HOOK}}
         run: |
-          curl "$url"
+          #curl "$url"
           
