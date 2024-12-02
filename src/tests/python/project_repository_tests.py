@@ -25,7 +25,7 @@ class ProjectRepositoryMethodTests(TestCase):
         input_parameters = test_1_method_parameters()
 
         expected_result = ProjectValidationDetails(State.Success, None)
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -39,7 +39,7 @@ class ProjectRepositoryMethodTests(TestCase):
         expected_result = ProjectValidationDetails(State.Warning,
                                                    "All dates in selected range must "
                                                    "be after the current date.")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -53,7 +53,7 @@ class ProjectRepositoryMethodTests(TestCase):
         expected_result = ProjectValidationDetails(State.Warning,
                                                    "No weekdays selected, projects must "
                                                    "be completed in work hours.")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -66,7 +66,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = ProjectValidationDetails(State.Warning,
                                                    "End date must be after start date.")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -79,7 +79,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = ProjectValidationDetails(State.Warning,
                                                    "Please select a date from both fields.")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -92,7 +92,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = ProjectValidationDetails(State.Warning,
                                                    "Please select a date from both fields.")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -105,7 +105,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = ProjectValidationDetails(State.Warning,
                                                    "Project name is already in use")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -116,7 +116,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_8_method_parameters()
 
-        sut.create_project(*[arg for arg in input_parameters])
+        sut.create_project(*input_parameters)
 
     @patch.object(Database, "query_database", test_9_query_function)
     def test_create_project_project_id_incremented_by_1_when_other_projects_exist(self):
@@ -124,7 +124,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_9_method_parameters()
 
-        sut.create_project(*[arg for arg in input_parameters])
+        sut.create_project(*input_parameters)
 
     @patch.object(Database, "query_database", test_10_query_function)
     def test_create_project_project_id_incremented_by_1_when_only_one_table_has_records(self):
@@ -132,7 +132,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_10_method_parameters()
 
-        sut.create_project(*[arg for arg in input_parameters])
+        sut.create_project(*input_parameters)
 
     @patch.object(Database, "query_database", test_11_query_function)
     def test_get_all_projects_date_converted_to_datetime_when_projects_returned(self):
@@ -146,7 +146,7 @@ class ProjectRepositoryMethodTests(TestCase):
                            Project("2", "Test Name 2", start_date, end_date, "3")]
         actual_result = sut.get_all_projects()
 
-        self.assertGreater(len(actual_result), 0)
+        self.assertEqual(len(expected_result), len(actual_result))
 
         for i in range(0, len(actual_result)):
             self.assertEqual(expected_result[i].project_id, actual_result[i].project_id)
@@ -162,7 +162,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = ProjectValidationDetails(State.Warning, "All dates in selected range must be "
                                                                   "after the current date.")
-        actual_result = sut.validate_project_dates(*[arg for arg in input_parameters])
+        actual_result = sut.validate_project_dates(*input_parameters)
 
         self.assertEqual(expected_result.state, actual_result.state)
         self.assertEqual(expected_result.message, actual_result.message)
@@ -191,9 +191,9 @@ class ProjectRepositoryMethodTests(TestCase):
         expected_result = [Project("1", "Test Name", start_date, end_date, 2),
                            Project("2", "Test Name 2", start_date, end_date, 2)]
 
-        actual_result = sut.get_manager_projects(*[arg for arg in input_parameters])
+        actual_result = sut.get_manager_projects(*input_parameters)
 
-        self.assertGreater(len(actual_result), 0)
+        self.assertEqual(len(expected_result), len(actual_result))
 
         for i in range(0, len(actual_result)):
             self.assertEqual(expected_result[i].project_id, actual_result[i].project_id)
@@ -210,7 +210,7 @@ class ProjectRepositoryMethodTests(TestCase):
         input_parameters = test_15_method_parameters()
         expected_result = []
 
-        actual_result = sut.get_manager_projects(*[arg for arg in input_parameters])
+        actual_result = sut.get_manager_projects(*input_parameters)
 
         self.assertEqual(expected_result, actual_result)
 
@@ -227,9 +227,9 @@ class ProjectRepositoryMethodTests(TestCase):
         expected_result = [Project("1", "Test Name", start_date, end_date, "2"),
                            Project("2", "Test Name 2", start_date, end_date, "2")]
 
-        actual_result = sut.get_employee_projects(*[arg for arg in input_parameters])
+        actual_result = sut.get_employee_projects(*input_parameters)
 
-        self.assertGreater(len(actual_result), 0)
+        self.assertEqual(len(expected_result), len(actual_result))
 
         for i in range(0, len(actual_result)):
             self.assertEqual(expected_result[i].project_id, actual_result[i].project_id)
@@ -247,7 +247,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = []
 
-        actual_result = sut.get_employee_projects(*[arg for arg in input_parameters])
+        actual_result = sut.get_employee_projects(*input_parameters)
 
         self.assertEqual(expected_result, actual_result)
 
@@ -263,9 +263,9 @@ class ProjectRepositoryMethodTests(TestCase):
                            PublicUser("3", "Test Username", "basic", "Test Name",
                                       "Test Surname", "2", "Test Email")]
 
-        actual_result = sut.get_available_employees(*[arg for arg in input_parameters])
+        actual_result = sut.get_available_employees(*input_parameters)
 
-        self.assertGreater(len(actual_result), 0)
+        self.assertEqual(len(expected_result), len(actual_result))
 
         for i in range(0, len(actual_result)):
             self.assertEqual(expected_result[i].user_id, actual_result[i].user_id)
@@ -284,7 +284,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = []
 
-        actual_result = sut.get_available_employees(*[arg for arg in input_parameters])
+        actual_result = sut.get_available_employees(*input_parameters)
 
         self.assertEqual(expected_result, actual_result)
 
@@ -304,9 +304,9 @@ class ProjectRepositoryMethodTests(TestCase):
                            ProjectMember(3, "Test Username", "basic", "Test Name",
                                       "Test Surname", member_2_holidays)]
 
-        actual_result = sut.get_enrolled_employees(*[arg for arg in input_parameters])
+        actual_result = sut.get_enrolled_employees(*input_parameters)
 
-        self.assertGreater(len(actual_result), 0)
+        self.assertEqual(len(expected_result), len(actual_result))
 
         for i in range(0, len(actual_result)):
             self.assertEqual(expected_result[i].user_id, actual_result[i].user_id)
@@ -326,7 +326,7 @@ class ProjectRepositoryMethodTests(TestCase):
 
         expected_result = []
 
-        actual_result = sut.get_enrolled_employees(*[arg for arg in input_parameters])
+        actual_result = sut.get_enrolled_employees(*input_parameters)
 
         self.assertEqual(expected_result, actual_result)
 
@@ -337,7 +337,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_22_method_parameters()
 
-        sut.add_employee_to_project(*[arg for arg in input_parameters])
+        sut.add_employee_to_project(*input_parameters)
 
     @patch.object(Database, "query_database", test_23_query_function)
     def test_add_employee_to_project_record_updated_when_preexisting_record_exists(self):
@@ -346,7 +346,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_23_method_parameters()
 
-        sut.add_employee_to_project(*[arg for arg in input_parameters])
+        sut.add_employee_to_project(*input_parameters)
 
     @patch.object(Database, "query_database", test_24_query_function)
     def test_remove_employee_from_project_sql_executes_correctly_when_method_is_called(self):
@@ -355,7 +355,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_24_method_parameters()
 
-        sut.remove_employee_from_project(*[arg for arg in input_parameters])
+        sut.remove_employee_from_project(*input_parameters)
 
     @patch.object(Database, "query_database", test_25_query_function)
     def test_find_project_name_returns_true_when_project_exists(self):
@@ -364,7 +364,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_25_method_parameters()
 
-        actual_result = sut.find_project_name(*[arg for arg in input_parameters])
+        actual_result = sut.find_project_name(*input_parameters)
 
         self.assertTrue(actual_result)
 
@@ -375,7 +375,7 @@ class ProjectRepositoryMethodTests(TestCase):
         sut = ProjectRepository(mock_database)
         input_parameters = test_26_method_parameters()
 
-        actual_result = sut.find_project_name(*[arg for arg in input_parameters])
+        actual_result = sut.find_project_name(*input_parameters)
 
         self.assertFalse(actual_result)
 
@@ -387,7 +387,7 @@ class ProjectRepositoryMethodTests(TestCase):
         input_parameters = test_27_method_parameters()
 
         expected_result = [datetime(2020, 5, 10), datetime(2020, 5, 11)]
-        actual_result = sut.get_project_overlap_holidays(*[arg for arg in input_parameters])
+        actual_result = sut.get_project_overlap_holidays(*input_parameters)
 
         self.assertEqual(expected_result, actual_result)
 
@@ -399,6 +399,6 @@ class ProjectRepositoryMethodTests(TestCase):
         input_parameters = test_28_method_parameters()
 
         expected_result = []
-        actual_result = sut.get_project_overlap_holidays(*[arg for arg in input_parameters])
+        actual_result = sut.get_project_overlap_holidays(*input_parameters)
 
         self.assertEqual(expected_result, actual_result)
