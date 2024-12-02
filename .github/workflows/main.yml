@@ -13,9 +13,11 @@ jobs:
         with:
           python-version: 3.12
           run: |
-            pwd
-            ls
             python pip install -r requirements.txt
+      - name: Test Directory
+        run: |
+          pwd
+          ls
       - name: Build and Run Tests
         uses: pybuilder/build@master
       - name: Deploy
