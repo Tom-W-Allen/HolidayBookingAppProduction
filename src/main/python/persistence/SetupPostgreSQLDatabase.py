@@ -12,12 +12,12 @@ def setup_postgresql_database(database: PostgreSQLDatabase):
             database.query_database("CREATE SCHEMA Common;")
 
             # Run script to set up tables
-            with open("persistence/scripts/Holiday App Database Creation Script.sql") as creation_script:
+            with open("src/main/python/persistence/scripts/Holiday App Database Creation Script.sql") as creation_script:
                 script = creation_script.read()
                 database.query_database(script)
 
             # Run script to populate tables
-            with open("persistence/scripts/Holiday App Database Population Script.sql") as population_script:
+            with open("src/main/python/persistence/scripts/Holiday App Database Population Script.sql") as population_script:
                 script = population_script.read()
                 database.query_database(script)
 
