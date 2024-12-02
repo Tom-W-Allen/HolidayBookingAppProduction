@@ -226,8 +226,8 @@ class RequestRepository(IRequestRepository):
             request = Request(item[0],
                               "",
                               "",
-                              item[1],
-                              item[2],
+                              format_database_date(item[1]),
+                              format_database_date(item[2]),
                               0,
                               str(getattr(status, 'name')))
 

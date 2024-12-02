@@ -1,12 +1,10 @@
-from unittest import TestCase, main
-from unittest.mock import MagicMock, patch
+from unittest import TestCase
+from unittest.mock import patch
 
 from domains.user.UserRepository import UserRepository
-from UserTestData import *
+from data.UserTestData import *
 from persistence.Database import Database
 
-_database = MagicMock()
-_sut = UserRepository(_database)
 
 def mock_postgre_sql(self):
     return True
@@ -22,7 +20,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_1_method_parameters()
 
         expected_result = None
-        actual_result = sut.add_user(*[arg for arg in input_parameters])
+        actual_result = sut.add_user(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -34,7 +32,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_2_method_parameters()
 
         expected_result = None
-        actual_result = sut.add_user(*[arg for arg in input_parameters])
+        actual_result = sut.add_user(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -46,7 +44,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_3_method_parameters()
 
         expected_result = None
-        actual_result = sut.add_user(*[arg for arg in input_parameters])
+        actual_result = sut.add_user(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -58,7 +56,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_4_method_parameters()
 
         expected_result = 1
-        actual_result = sut.get_user_manager(*[arg for arg in input_parameters])
+        actual_result = sut.get_user_manager(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -70,7 +68,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_5_method_parameters()
 
         expected_result = -1
-        actual_result = sut.get_user_manager(*[arg for arg in input_parameters])
+        actual_result = sut.get_user_manager(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -82,7 +80,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_6_method_parameters()
 
         expected_result = []
-        actual_result = sut.get_user_type_details(*[arg for arg in input_parameters])
+        actual_result = sut.get_user_type_details(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -94,7 +92,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_7_method_parameters()
 
         expected_result = test_7_expected_result()
-        actual_result = sut.get_user_type_details(*[arg for arg in input_parameters])
+        actual_result = sut.get_user_type_details(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
         for i in range(0, len(expected_result)):
@@ -113,7 +111,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_8_method_parameters()
 
         expected_result = None
-        actual_result = sut.get_user_login_details(*[arg for arg in input_parameters])
+        actual_result = sut.get_user_login_details(*input_parameters)
         self.assertEqual(expected_result, actual_result)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
@@ -125,7 +123,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_9_method_parameters()
 
         expected_result = test_9_expected_result()[0]
-        actual_result = sut.get_user_login_details(*[arg for arg in input_parameters])
+        actual_result = sut.get_user_login_details(*input_parameters)
 
         self.assertEqual(expected_result.user_id, actual_result.user_id)
         self.assertEqual(expected_result.user_name, actual_result.user_name)
@@ -140,7 +138,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_10_method_parameters()
 
-        actual_result = sut.check_username_exists(*[arg for arg in input_parameters])
+        actual_result = sut.check_username_exists(*input_parameters)
 
         self.assertTrue(actual_result)
 
@@ -152,7 +150,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_11_method_parameters()
 
-        actual_result = sut.check_username_exists(*[arg for arg in input_parameters])
+        actual_result = sut.check_username_exists(*input_parameters)
 
         self.assertFalse(actual_result)
 
@@ -196,7 +194,7 @@ class UserRepositoryMethodTests(TestCase):
         input_parameters = test_14_method_parameters()
 
         expected_result = test_14_expected_result()[0]
-        actual_result = sut.get_public_user_details(*[arg for arg in input_parameters])
+        actual_result = sut.get_public_user_details(*input_parameters)
 
         self.assertEqual(expected_result.user_id, actual_result.user_id)
         self.assertEqual(expected_result.user_name, actual_result.user_name)
@@ -213,7 +211,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_15_method_parameters()
 
-        actual_result = sut.get_public_user_details(*[arg for arg in input_parameters])
+        actual_result = sut.get_public_user_details(*input_parameters)
 
         self.assertEqual(None, actual_result)
 
@@ -226,7 +224,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_16_method_parameters()
 
-        sut.update_user(*[arg for arg in input_parameters])
+        sut.update_user(*input_parameters)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(UserRepository, "get_public_user_details", test_17_get_public_user_details)
@@ -237,7 +235,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_17_method_parameters()
 
-        sut.update_user(*[arg for arg in input_parameters])
+        sut.update_user(*input_parameters)
 
     @patch.object(UserRepository, "is_postgreSQL", mock_postgre_sql)
     @patch.object(UserRepository, "get_public_user_details", test_18_get_public_user_details)
@@ -248,7 +246,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_18_method_parameters()
 
-        sut.update_user(*[arg for arg in input_parameters])
+        sut.update_user(*input_parameters)
 
     @patch.object(Database, "query_database", test_19_query_function)
     def test_delete_user_user_deleted_correctly_when_user_type_is_basic(self):
@@ -257,7 +255,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_19_method_parameters()
 
-        sut.delete_user(*[arg for arg in input_parameters])
+        sut.delete_user(*input_parameters)
 
     @patch.object(Database, "query_database", test_20_query_function)
     def test_delete_user_user_deleted_correctly_when_user_type_is_manager(self):
@@ -266,7 +264,7 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_20_method_parameters()
 
-        sut.delete_user(*[arg for arg in input_parameters])
+        sut.delete_user(*input_parameters)
 
     @patch.object(Database, "query_database", test_21_query_function)
     def test_delete_user_user_deleted_correctly_when_user_type_is_admin(self):
@@ -275,8 +273,4 @@ class UserRepositoryMethodTests(TestCase):
         sut = UserRepository(mock_database)
         input_parameters = test_21_method_parameters()
 
-        sut.delete_user(*[arg for arg in input_parameters])
-
-
-if __name__ == '__main__':
-    main()
+        sut.delete_user(*input_parameters)
