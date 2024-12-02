@@ -94,3 +94,9 @@ class IUserRepository:
 
     def update_password_attempts(self, user_id: int, new_attempts: int) -> None:
         pass
+
+    def approve_user(self, user_id: int) -> None:
+        pass
+
+    def get_admin_approved(self, user_id: int) -> str:
+        pass
