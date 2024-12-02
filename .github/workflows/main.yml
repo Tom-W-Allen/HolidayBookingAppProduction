@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feature/edit-profile-update]
+    branches: [main, develop]
 
 jobs:
   ci:
