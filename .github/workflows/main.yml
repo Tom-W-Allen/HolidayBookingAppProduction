@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main, develop]
+    branches: [feature/update-database-population]
 
 jobs:
   ci:
