@@ -165,6 +165,7 @@ cython_debug/
 *.db
 *test_script.py
 *test_script.sql
+*.sql
 
 # Prevent committing EB Deployment folder
 *.zip
