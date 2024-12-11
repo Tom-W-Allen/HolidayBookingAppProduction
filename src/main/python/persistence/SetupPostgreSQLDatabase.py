@@ -3,7 +3,7 @@ from persistence.Databases.PostgreSQLDatabase import PostgreSQLDatabase
 
 def setup_postgresql_database(database: PostgreSQLDatabase):
     current_file_path = os.path.dirname(__file__).split("\\")
-    script_file_path = ("\\".join(current_file_path[:len(current_file_path) - 4])) + "\\"
+    script_file_path = ("\\".join(current_file_path[:len(current_file_path) - 3])) + "\\"
 
     try:
         schema_exists = len(database.query_database("SELECT * FROM information_schema.schemata "
