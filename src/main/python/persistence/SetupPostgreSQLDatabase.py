@@ -16,12 +16,12 @@ def setup_postgresql_database(database: PostgreSQLDatabase):
             database.query_database("CREATE SCHEMA Common;")
 
             # Run script to set up tables
-            with open(f"{script_file_path}Holiday App Database Creation Script.sql") as creation_script:
+            with open(f"{script_file_path}Holiday_App_Database_Creation_Script.sql") as creation_script:
                 script = creation_script.read()
                 database.query_database(script)
 
             # Run script to populate tables
-            with open(f"{script_file_path}Holiday App Database Population Script.sql") as population_script:
+            with open(f"{script_file_path}Holiday_App_Database_Population_Script.sql") as population_script:
                 script = population_script.read()
                 database.query_database(script)
 
