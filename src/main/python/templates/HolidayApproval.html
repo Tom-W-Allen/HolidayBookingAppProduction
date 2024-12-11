@@ -70,6 +70,7 @@
                 <input type="hidden" name="request id" value="{{request.id}}">
                 <input type="hidden" name="form name" value="confirm approve or reject">
                 <input type="hidden" name="selected user" value="{{selected_user}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             </form>
         </div>
     </div>
@@ -87,6 +88,7 @@
                 <input type="hidden" name="form name" value="approve or reject request">
                 <input type="hidden" name="request id" value="{{request.id}}">
                 <input type="hidden" name="selected user" value="{{selected_user}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             </form>
         </div>
     {% endif %}
