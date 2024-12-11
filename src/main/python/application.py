@@ -1,6 +1,7 @@
 from os import path, getenv
 from waitress import serve
 from flask_wtf.csrf import CSRFProtect
+import urllib.request
 
 from flask import Flask, render_template, request, redirect, session
 from flask_login import LoginManager
@@ -85,8 +86,16 @@ environment = getenv("ENVIRONMENT")
 if __name__ == '__main__':
     if environment == "Production" or environment == "Development":
         # Make available across all possible addresses when deployed on render
+        database_service = getenv("DATABASE_SERVICE")
         database = get_database()
-        setup_postgresql_database(database)
+        #setup_postgresql_database(database)
+
+        # Call database API on redeployment, make sure database is set up and populated if not already
+        try:
+            urllib.request.urlopen(f"{database_service}/UpdateDatabase")
+        except:
+            pass
+
         serve(application, host='0.0.0.0', port=5000)
     else:
         # Make sure that Sqlite database is set up correctly with example data when run locally (but only if
