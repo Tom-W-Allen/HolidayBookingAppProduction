@@ -12,7 +12,7 @@ from domains.user.UserRepository import UserRepository
 from mappers.LoginPageMapper import LoginPageMapper
 from persistence.CreateSqliteDatabase import set_up_sqlite_database
 from persistence.DatabaseFactory import get_database
-from persistence.SetupPostgreSQLDatabase import setup_postgresql_database
+
 
 from blueprints.HomeBlueprint import home_blueprint
 from blueprints.RequestBlueprint import request_blueprint
@@ -88,7 +88,6 @@ if __name__ == '__main__':
         # Make available across all possible addresses when deployed on render
         database_service = getenv("DATABASE_SERVICE")
         database = get_database()
-        #setup_postgresql_database(database)
 
         # Call database API on redeployment, make sure database is set up and populated if not already
         try:
