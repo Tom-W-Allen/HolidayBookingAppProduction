@@ -11,6 +11,8 @@ from datetime import datetime
 from persistence.Database import Database
 from common.DateFunctions import format_database_date
 import hashlib
+import random
+import string
 
 
 class UserRepository(IUserRepository):
@@ -77,7 +79,7 @@ class UserRepository(IUserRepository):
         self._database.query_database("UPDATE users SET user_password = ? WHERE reset_identifier = ?",
                                       arguments=[password, reset_id])
 
-    def add_user(self, username: str, password: str, account_type: str, first_name: str,
+    def add_user(self, username: str, password: str, salt: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
 
         top_id = self._database.query_database("SELECT user_id FROM users ORDER BY user_id DESC",
@@ -90,11 +92,12 @@ class UserRepository(IUserRepository):
         # only store email addresses if they are going to the encrypted server
         email_entry = email if self.is_postgreSQL() else None
 
-        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                       arguments=
                                         [str(record_id),
                                          str(username),
                                          str(password),
+                                         str(salt),
                                          None,
                                          str(account_type),
                                          str(first_name),
@@ -224,15 +227,19 @@ class UserRepository(IUserRepository):
 
         # Need to hash password before updating table if it has been changed.
         if password_updated:
-            new_password = self._database.query_database("SELECT password_change FROM users WHERE user_id = ?",
-                                                         arguments=[str(user.user_id)])[0][0]
+            new_password_and_salt = self._database.query_database("SELECT password_change, salt_change "
+                                                                  "FROM users WHERE user_id = ?",
+                                                         arguments=[str(user.user_id)])[0]
 
             self._database.query_database("UPDATE users SET "
                                           "user_password = ?,"
+                                          "salt = ? "
                                           "password_change = NULL "
+                                          "salt_change = NULL "
                                           "WHERE user_id = ?",
                                           arguments=
-                                          [str(new_password),
+                                          [str(new_password_and_salt[0]),
+                                           str(new_password_and_salt[1]),
                                            str(user.user_id)])
 
             # Make sure that employees are not automatically reassigned to projects if they switch back to former
@@ -352,17 +359,21 @@ class UserRepository(IUserRepository):
         return PasswordValidation(state, message)
 
     def store_proposed_password(self, user_id: int, password: str) -> None:
-        bytes_password = hashlib.sha256(password.encode())
+        salt = ''.join(random.choices(string.ascii_letters, k=10))
+        salted_password = password + salt
+        bytes_password = hashlib.sha256(salted_password.encode())
         hash_digest = bytes_password.hexdigest()
 
-        self._database.query_database("UPDATE users SET password_change = ? WHERE user_id = ?",
+
+        self._database.query_database("UPDATE users SET password_change = ?, salt_change = ? WHERE user_id = ?",
                                       arguments=
                                       [str(hash_digest),
+                                       str(salt),
                                        str(user_id)])
 
 
     def clear_password_change(self, user_id: int) -> None:
-        self._database.query_database("UPDATE users SET password_change = NULL WHERE user_id = ?",
+        self._database.query_database("UPDATE users SET password_change = NULL, salt_change = NULL WHERE user_id = ?",
                                       arguments=[str(user_id)])
 
 

@@ -1,5 +1,7 @@
 from blueprints.models.LoginPageData import LoginPageData
 from domains.user.UserRepositoryInterface import IUserRepository
+import random
+import string
 
 
 from flask import request, session
@@ -99,7 +101,10 @@ class LoginPageMapper:
             # Passwords need to be stored in database as hash digests to maintain security. Therefore, need to convert
             # the password provided by the user to bytes so that hashlib's sha256 method can get
             # its hash digest (Python, 2024a; W3 Schools, 2024).
-            bytes_password = hashlib.sha256(request.form["Password"].encode())
+            salt = ''.join(random.choices(string.ascii_letters, k=10))
+            salted_password = request.form["Password"] + salt
+
+            bytes_password = hashlib.sha256(salted_password.encode())
 
             # Use hexidigest to retrieve the hash digest of the password
             hash_digest = bytes_password.hexdigest()
@@ -108,6 +113,7 @@ class LoginPageMapper:
 
             self.user_repository.add_user(request.form["User Name"],
                                           hash_digest,
+                                          salt,
                                           request.form["Account Type"],
                                           request.form["First Name"],
                                           request.form["Surname"],
