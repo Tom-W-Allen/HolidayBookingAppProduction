@@ -353,7 +353,7 @@ def test_17_method_parameters():
 def test_17_query_strings():
     return ("UPDATE users SET first_name = ?, surname = ?, manager = ?, email_address = ? WHERE user_id = ?",
             "SELECT password_change, salt_change FROM users WHERE user_id = ?",
-            "UPDATE users SET user_password = ?, salt = ?, password_change = NULL, salt_change = NULL, WHERE user_id = ?")
+            "UPDATE users SET user_password = ?, salt = ?, password_change = NULL, salt_change = NULL WHERE user_id = ?")
 
 def test_17_mock_parameters():
     inputs = test_17_method_parameters()[0]
@@ -385,7 +385,7 @@ def test_18_method_parameters():
 def test_18_query_strings():
     return ("UPDATE users SET first_name = ?, surname = ?, manager = ?, email_address = ? WHERE user_id = ?",
             "SELECT password_change, salt_change FROM users WHERE user_id = ?",
-            "UPDATE users SET user_password = ?, salt = ?, password_change = NULL, salt_change = NULL, WHERE user_id = ?",
+            "UPDATE users SET user_password = ?, salt = ?, password_change = NULL, salt_change = NULL WHERE user_id = ?",
             "UPDATE employee_projects SET leave_date = ? WHERE employee_id = ? AND project_id IN "
             "(SELECT project_id FROM projects WHERE project_lead_id = ?)",
             "UPDATE requests SET approver_id = ? WHERE employee_id = ? AND request_status = 'pending'"
