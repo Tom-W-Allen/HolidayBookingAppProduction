@@ -257,6 +257,8 @@ class UserRepository(IUserRepository):
                 today = datetime.now()
                 string_today = datetime.strftime(today, "%Y-%m-%d")
 
+                manager_id = 0 if current_details.manager is None else current_details.manager
+
                 self._database.query_database("UPDATE employee_projects "
                                               "SET leave_date = ? "
                                               "WHERE employee_id = ? AND project_id IN "
@@ -264,7 +266,7 @@ class UserRepository(IUserRepository):
                                               arguments=
                                               [string_today,
                                                str(user.user_id),
-                                               str(current_details.manager)])
+                                               str(manager_id)])
 
                 self._database.query_database("UPDATE requests SET "
                                               "approver_id = ? "
