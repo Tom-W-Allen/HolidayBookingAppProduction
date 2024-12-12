@@ -6,17 +6,18 @@ from datetime import datetime
 
 # <editor-fold desc="Test 1 Data">
 def test_1_method_parameters():
-    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, None, "Test email"]
+    return ["Test user name", "Test password", "Test salt", UserType.basic, "Test first name",
+            "Test surname", 25, None, "Test email"]
 
 def test_1_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
-            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 def test_1_mock_parameters():
     return (
         None,
-        ["1", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", None,
-         "Test email", None, None, None, "25", "0", "Y"]
+        ["1", "Test user name", "Test password", "Test salt", None, None, str(UserType.basic),"Test first name",
+         "Test surname", None, "Test email", None, None, None, "25", "0", "Y"]
     )
 
 def test_1_query_function(self, query_string, arguments=None, limit=None):
@@ -31,17 +32,18 @@ def test_1_query_function(self, query_string, arguments=None, limit=None):
 
 # <editor-fold desc="Test 2 Data">
 def test_2_method_parameters():
-    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, None, "Test email"]
+    return ["Test user name", "Test password", "Test salt", UserType.basic, "Test first name",
+            "Test surname", 25, None, "Test email"]
 
 def test_2_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
-            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 def test_2_mock_parameters():
     return (
         None,
-        ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", None,
-         "Test email", None, None, None, "25", "0", "Y"]
+        ["2", "Test user name", "Test password", "Test salt", None, None, str(UserType.basic),"Test first name",
+         "Test surname", None, "Test email", None, None, None, "25", "0", "Y"]
     )
 
 def test_2_query_function(self, query_string, arguments=None, limit=None):
@@ -56,17 +58,18 @@ def test_2_query_function(self, query_string, arguments=None, limit=None):
 
 # <editor-fold desc="Test 3 Data">
 def test_3_method_parameters():
-    return ["Test user name", "Test password", UserType.basic, "Test first name", "Test surname", 25, 2, "Test email"]
+    return ["Test user name", "Test password", "Test salt", UserType.basic, "Test first name",
+            "Test surname", 25, 2, "Test email"]
 
 def test_3_query_strings():
     return ("SELECT user_id FROM users ORDER BY user_id DESC",
-            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 def test_3_mock_parameters():
     return (
         None,
-        ["2", "Test user name", "Test password", None, str(UserType.basic),"Test first name", "Test surname", "2",
-         "Test email", None, None, None, "25", "0", "Y"]
+        ["2", "Test user name", "Test password", "Test salt", None, None, str(UserType.basic),"Test first name",
+         "Test surname", "2", "Test email", None, None, None, "25", "0", "Y"]
     )
 
 def test_3_query_function(self, query_string, arguments=None, limit=None):
@@ -349,21 +352,21 @@ def test_17_method_parameters():
 
 def test_17_query_strings():
     return ("UPDATE users SET first_name = ?, surname = ?, manager = ?, email_address = ? WHERE user_id = ?",
-            "SELECT password_change FROM users WHERE user_id = ?",
-            "UPDATE users SET user_password = ?,password_change = NULL WHERE user_id = ?")
+            "SELECT password_change, salt_change FROM users WHERE user_id = ?",
+            "UPDATE users SET user_password = ?, salt = ?, password_change = NULL, salt_change = NULL, WHERE user_id = ?")
 
 def test_17_mock_parameters():
     inputs = test_17_method_parameters()[0]
     return [[inputs.first_name, inputs.surname, None, inputs.email, str(inputs.user_id)],
             [str(inputs.user_id)],
-            ["Test New Password", str(inputs.user_id)]]
+            ["Test New Password", "Test New Salt", str(inputs.user_id)]]
 
 def test_17_query_function(self, query_string, arguments=None, limit=None):
 
     if query_string == test_17_query_strings()[0] and arguments == test_17_mock_parameters()[0] and limit is None:
         return []
     elif query_string == test_17_query_strings()[1] and arguments == test_17_mock_parameters()[1] and limit is None:
-        return [("Test New Password", None)]
+        return [("Test New Password", "Test New Salt")]
     elif query_string == test_17_query_strings()[2] and arguments == test_17_mock_parameters()[2] and limit is None:
         return []
     else:
@@ -381,8 +384,8 @@ def test_18_method_parameters():
 
 def test_18_query_strings():
     return ("UPDATE users SET first_name = ?, surname = ?, manager = ?, email_address = ? WHERE user_id = ?",
-            "SELECT password_change FROM users WHERE user_id = ?",
-            "UPDATE users SET user_password = ?,password_change = NULL WHERE user_id = ?",
+            "SELECT password_change, salt_change FROM users WHERE user_id = ?",
+            "UPDATE users SET user_password = ?, salt = ?, password_change = NULL, salt_change = NULL, WHERE user_id = ?",
             "UPDATE employee_projects SET leave_date = ? WHERE employee_id = ? AND project_id IN "
             "(SELECT project_id FROM projects WHERE project_lead_id = ?)",
             "UPDATE requests SET approver_id = ? WHERE employee_id = ? AND request_status = 'pending'"
@@ -395,7 +398,7 @@ def test_18_mock_parameters():
 
     return [[inputs.first_name, inputs.surname, str(inputs.manager), inputs.email, str(inputs.user_id)],
             [str(inputs.user_id)],
-            ["Test New Password", str(inputs.user_id)],
+            ["Test New Password", "Test New Salt", str(inputs.user_id)],
             [string_today, str(inputs.user_id), "6"],
             [str(inputs.manager), str(inputs.user_id)]]
 
@@ -404,7 +407,7 @@ def test_18_query_function(self, query_string, arguments=None, limit=None):
     if query_string == test_18_query_strings()[0] and arguments == test_18_mock_parameters()[0] and limit is None:
         return []
     elif query_string == test_18_query_strings()[1] and arguments == test_18_mock_parameters()[1] and limit is None:
-        return [("Test New Password", None)]
+        return [("Test New Password", "Test New Salt")]
     elif query_string == test_18_query_strings()[2] and arguments == test_18_mock_parameters()[2] and limit is None:
         return []
     elif query_string == test_18_query_strings()[3] and arguments == test_18_mock_parameters()[3] and limit is None:

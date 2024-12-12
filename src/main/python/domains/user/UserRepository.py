@@ -92,12 +92,13 @@ class UserRepository(IUserRepository):
         # only store email addresses if they are going to the encrypted server
         email_entry = email if self.is_postgreSQL() else None
 
-        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        self._database.query_database("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                       arguments=
                                         [str(record_id),
                                          str(username),
                                          str(password),
                                          str(salt),
+                                         None,
                                          None,
                                          str(account_type),
                                          str(first_name),
@@ -232,10 +233,10 @@ class UserRepository(IUserRepository):
                                                          arguments=[str(user.user_id)])[0]
 
             self._database.query_database("UPDATE users SET "
-                                          "user_password = ?,"
-                                          "salt = ? "
-                                          "password_change = NULL "
-                                          "salt_change = NULL "
+                                          "user_password = ?, "
+                                          "salt = ?, "
+                                          "password_change = NULL, "
+                                          "salt_change = NULL, "
                                           "WHERE user_id = ?",
                                           arguments=
                                           [str(new_password_and_salt[0]),
