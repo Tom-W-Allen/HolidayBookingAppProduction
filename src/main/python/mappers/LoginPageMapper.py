@@ -50,7 +50,10 @@ class LoginPageMapper:
 
         # Since passwords are stored in the database in a hashed form, need to convert the password provided by the
         # user to bytes so that hashlib's sha256 method can get its hash digest (Python, 2024a; W3 Schools, 2024).
-        bytes_password = hashlib.sha256(request.form["Password"].encode())
+
+        salt = self.user_repository.get_salt(user_details.user_id)
+        salted_password = request.form["Password"] + salt
+        bytes_password = hashlib.sha256(salted_password.encode())
 
         hash_digest = bytes_password.hexdigest()
 

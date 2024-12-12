@@ -112,6 +112,13 @@ class UserRepository(IUserRepository):
                                          str(0), # No password attempts yet as account was just created
                                          admin_approved])
 
+    def get_salt(self, user_id: int) -> str:
+
+        salt = self._database.query_database("SELECT salt FROM users WHERE user_id = ?",
+                                             arguments=[str(user_id)])
+
+        return salt[0][0]
+
     def get_user_id_from_email(self, email_address: str) -> int:
 
         user_id = self._database.query_database("SELECT user_id FROM users WHERE email_address = ?",
