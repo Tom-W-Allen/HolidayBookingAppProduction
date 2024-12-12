@@ -243,7 +243,7 @@ class UserRepository(IUserRepository):
                                           "user_password = ?, "
                                           "salt = ?, "
                                           "password_change = NULL, "
-                                          "salt_change = NULL, "
+                                          "salt_change = NULL "
                                           "WHERE user_id = ?",
                                           arguments=
                                           [str(new_password_and_salt[0]),
