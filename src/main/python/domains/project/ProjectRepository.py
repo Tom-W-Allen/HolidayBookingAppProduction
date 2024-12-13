@@ -167,7 +167,7 @@ class ProjectRepository(IProjectRepository):
         # Find users who have the project lead as their manager and do not have employee_project records with
         # a leave date later than today (which indicates they are currently enrolled on the project).
         available_employees = self._database.query_database(
-            "SELECT user_id, user_name, user_role, first_name, surname, manager, email "
+            "SELECT user_id, user_name, user_role, first_name, surname, manager, email_address "
             "FROM users AS u1 "
             "WHERE "
             "manager = ? AND "

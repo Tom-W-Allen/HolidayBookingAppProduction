@@ -292,7 +292,7 @@ def test_18_method_parameters():
     return [1, 2]
 
 def test_18_query_strings():
-    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, email "
+    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, email_address "
             "FROM users AS u1 "
             "WHERE "
             "manager = ? AND "
@@ -316,7 +316,7 @@ def test_19_method_parameters():
     return [1, 2]
 
 def test_19_query_strings():
-    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, email "
+    return ("SELECT user_id, user_name, user_role, first_name, surname, manager, email_address "
             "FROM users AS u1 "
             "WHERE "
             "manager = ? AND "
