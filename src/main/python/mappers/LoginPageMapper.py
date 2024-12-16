@@ -30,6 +30,14 @@ class LoginPageMapper:
         message = None
 
         user_details = self.user_repository.get_user_login_details(request.form["User Name"])
+
+        if user_details is None:
+            message = "Incorrect user name or password (Warning: 3 incorrect password attempts will lock your account)"
+            return LoginPageData(login_redirect,
+                                 State.Warning,
+                                 message,
+                                 False)
+
         admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
 
         # Do not allow admins to signup without approval!
