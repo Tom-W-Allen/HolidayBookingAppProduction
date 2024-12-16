@@ -206,6 +206,13 @@ class UserRepository(IUserRepository):
                                                   arguments=[str(user_name)])
         return len(user_name) > 0
 
+    def get_user_id_by_reset_id(self, reset_id: str) -> int:
+
+        user_id = self._database.query_database("SELECT user_id FROM users WHERE reset_identifier = ?",
+                                                arguments=[str(reset_id)])
+
+        return int(user_id[0][0])
+
     def update_user(self, user: PublicUser, password_updated: bool = False):
         try:
             manager = int(user.manager)

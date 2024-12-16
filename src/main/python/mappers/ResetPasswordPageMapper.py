@@ -17,6 +17,7 @@ class ResetPasswordPageMapper(BaseMapper):
         # Does email match id?
         expected_email = self.user_repository.get_email_by_id(reset_id)
         actual_email = request.form["email address"]
+        user_id = self.user_repository.get_user_id_by_reset_id(reset_id)
 
         if expected_email != actual_email:
             state = State.Warning
@@ -41,7 +42,7 @@ class ResetPasswordPageMapper(BaseMapper):
 
                 self.user_repository.update_password_by_reset_id(reset_id, hash_digest)
                 self.user_repository.clear_expiry_data(reset_id)
-
+                self.user_repository.update_password_attempts(user_id, 0)
                 state = State.Success
                 message = "Thank you, your password has been changed"
 

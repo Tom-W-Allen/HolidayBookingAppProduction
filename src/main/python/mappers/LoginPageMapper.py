@@ -40,7 +40,7 @@ class LoginPageMapper:
                                   message,
                                   False)
 
-        if user_details.password_attempts == 3:
+        if user_details.password_attempts >= 3:
             message = ("You have entered an incorrect password three times. Please click on the link below to "
                        "reset your password with the email that you used to register.")
             return LoginPageData(login_redirect,

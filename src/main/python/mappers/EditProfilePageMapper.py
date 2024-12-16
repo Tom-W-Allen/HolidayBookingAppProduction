@@ -279,6 +279,7 @@ class EditProfilePageMapper(BaseMapper):
             password_changed = self.user_repository.verify_password_change(user_id)
             self.user_repository.update_user(form_data, password_changed)
             message = "Your account details have been successfully updated"
+            self.user_repository.update_password_attempts(user_id, 0)
             state = State.Success
 
         # Reset form details
