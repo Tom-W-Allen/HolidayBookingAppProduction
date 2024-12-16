@@ -74,10 +74,10 @@ class UserRepository(IUserRepository):
 
         return None if len(email) < 1 else email[0][0]
 
-    def update_password_by_reset_id(self, reset_id: str, password: str):
+    def update_password_by_reset_id(self, reset_id: str, password: str, salt: str):
 
-        self._database.query_database("UPDATE users SET user_password = ? WHERE reset_identifier = ?",
-                                      arguments=[password, reset_id])
+        self._database.query_database("UPDATE users SET user_password = ?, salt = ? WHERE reset_identifier = ?",
+                                      arguments=[password, salt, reset_id])
 
     def add_user(self, username: str, password: str, salt: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int], email: Optional[str]):

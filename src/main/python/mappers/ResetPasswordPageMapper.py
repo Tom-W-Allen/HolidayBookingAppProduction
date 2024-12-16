@@ -4,6 +4,8 @@ from domains.user.UserRepositoryInterface import IUserRepository
 from mappers.BaseMapper import BaseMapper
 from blueprints.models.ResetPasswordPageData import ResetPasswordPageData
 import hashlib
+import random
+import string
 
 class ResetPasswordPageMapper(BaseMapper):
     def __init__(self, user_repository: IUserRepository,):
@@ -35,12 +37,15 @@ class ResetPasswordPageMapper(BaseMapper):
                 # Passwords need to be stored in database as hash digests to maintain security. Therefore, need to convert
                 # the password provided by the user to bytes so that hashlib's sha256 method can get
                 # its hash digest (Python, 2024a; W3 Schools, 2024).
-                bytes_password = hashlib.sha256(password.encode())
+                salt = ''.join(random.choices(string.ascii_letters, k=10))
+                salted_password = request.form["Password"] + salt
+
+                bytes_password = hashlib.sha256(salted_password.encode())
 
                 # Use hexidigest to retrieve the hash digest of the password
                 hash_digest = bytes_password.hexdigest()
 
-                self.user_repository.update_password_by_reset_id(reset_id, hash_digest)
+                self.user_repository.update_password_by_reset_id(reset_id, hash_digest, salt)
                 self.user_repository.clear_expiry_data(reset_id)
                 self.user_repository.update_password_attempts(user_id, 0)
                 state = State.Success
