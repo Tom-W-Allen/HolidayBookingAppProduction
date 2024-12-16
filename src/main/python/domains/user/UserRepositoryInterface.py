@@ -100,3 +100,6 @@ class IUserRepository:
 
     def get_admin_approved(self, user_id: int) -> str:
         pass
+
+    def get_user_id_by_reset_id(self, reset_id: str) -> int:
+        pass
