@@ -38,7 +38,7 @@ class ResetPasswordPageMapper(BaseMapper):
                 # the password provided by the user to bytes so that hashlib's sha256 method can get
                 # its hash digest (Python, 2024a; W3 Schools, 2024).
                 salt = ''.join(random.choices(string.ascii_letters, k=10))
-                salted_password = request.form["Password"] + salt
+                salted_password = password + salt
 
                 bytes_password = hashlib.sha256(salted_password.encode())
 
