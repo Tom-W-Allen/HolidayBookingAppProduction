@@ -74,7 +74,7 @@ class LoginPageMapper:
             state = State.Warning
             message = "Incorrect user name or password (Warning: 3 incorrect password attempts will lock your account)"
 
-        if user_details is not None:
+        if user_details is not None and (user_details.password != hash_digest):
             # Username is valid, but password has been entered incorrectly. Increment attempts by one.
             current_attempts = self.user_repository.get_password_attempts(user_details.user_id)
             self.user_repository.update_password_attempts(user_details.user_id, current_attempts + 1)
