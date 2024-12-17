@@ -100,14 +100,22 @@ class LoginPageMapper:
 
     def map_sign_up_details(self) -> LoginPageData:
 
+        state = State.Success
+        email = request.form["Email Address"] if self.user_repository.is_postgreSQL() else None
         validation = self.user_repository.validate_signup_data(request.form["User Name"],
                                                                request.form["Password"],
                                                                request.form["Confirmed"],
                                                                request.form["First Name"],
                                                                request.form["Surname"])
 
+        email_validation = None if email is None else self.user_repository.validate_email(email)
+
         if validation.state == State.Warning:
             message = validation.message
+            state = validation.state
+        elif email_validation is not None and email_validation.state == State.Warning:
+            message = email_validation.message
+            state = email_validation.state
         else:
             # Passwords need to be stored in database as hash digests to maintain security. Therefore, need to convert
             # the password provided by the user to bytes so that hashlib's sha256 method can get
@@ -119,8 +127,6 @@ class LoginPageMapper:
 
             # Use hexidigest to retrieve the hash digest of the password
             hash_digest = bytes_password.hexdigest()
-
-            email = request.form["Email Address"] if self.user_repository.is_postgreSQL() else None
 
             self.user_repository.add_user(request.form["User Name"],
                                           hash_digest,
@@ -135,6 +141,6 @@ class LoginPageMapper:
             message = "Your account has been set up, please log in."
 
         return LoginPageData(None,
-                             validation.state,
+                             state,
                              message,
                              False)

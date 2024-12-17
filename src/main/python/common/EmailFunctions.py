@@ -32,3 +32,16 @@ def send_email(content, recipient, subject, authentication_details):
         server.login(sender, password=password)
         server.sendmail(sender, recipient, message.as_string())
 
+def validate_email_address(email):
+    at_count = len([char for char in email if char == "@"])
+
+    if at_count != 1:
+        return False
+
+    split_address = email.split("@")
+    split_by_dot = split_address[1].split(".")
+
+    if len(split_by_dot) != 2:
+        return False
+
+    return True
