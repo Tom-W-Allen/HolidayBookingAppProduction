@@ -1,7 +1,7 @@
 from os import path, getenv
 from waitress import serve
 from flask_wtf.csrf import CSRFProtect
-import urllib.request
+import requests
 
 from flask import Flask, render_template, request, redirect, session
 from flask_login import LoginManager
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
         # Call database API on redeployment, make sure database is set up and populated if not already
         try:
-            urllib.request.urlopen(f"{database_service}/UpdateDatabase")
+            requests.get(f"{database_service}/UpdateDatabase", timeout=10)
         except:
             pass
 
