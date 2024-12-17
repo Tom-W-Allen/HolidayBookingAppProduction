@@ -6,6 +6,7 @@ from domains.user.UserRepository import UserRepository
 from domains.request.RequestRepository import RequestRepository
 from domains.project.ProjectRepository import ProjectRepository
 from persistence.DatabaseFactory import get_database
+from common.Logging import write_log
 
 edit_profile_blueprint = Blueprint('edit_profile_blueprint', __name__)
 database = get_database()
@@ -32,6 +33,7 @@ def edit_profile():
             session["refresh_page"] = "no"
         elif html_manipulation_detected():
             page_data = edit_profile_page_mapper.map_error()
+            write_log(user_details.user_name, "HTML Manipulation", "HTML Manipulation attempted on Edit Profile Page")
         else:
             match request.form["form name"]:
                 case "user selection":

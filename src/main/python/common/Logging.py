@@ -9,7 +9,10 @@ def write_log(user, event, message):
     encryption_key = getenv("ENCRYPTION_KEY")
     encrypter = Fernet(encryption_key)
     time = datetime.now()
-    reformatted_time = f"{time.hour}:{time.minute}:{time.second} {time.day}-{time.month}-{time.year}"
+    reformatted_hour = f"{time.hour}" if len(f"{time.hour}") > 1 else f"0{time.hour}"
+    reformatted_minute = f"{time.minute}" if len(f"{time.minute}") > 1 else f"0{time.minute}"
+    reformatted_second = f"{time.second}" if len(f"{time.second}") > 1 else f"0{time.second}"
+    reformatted_time = f"{reformatted_hour}:{reformatted_minute}:{reformatted_second} {time.day}-{time.month}-{time.year}"
     log_data = f"{user},{event},{message},{reformatted_time}"
 
     encrypted_text = encrypter.encrypt(log_data.encode()).decode() + "\n"

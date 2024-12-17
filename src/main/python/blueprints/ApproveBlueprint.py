@@ -1,6 +1,5 @@
 from flask import request, render_template, Blueprint, session, redirect, url_for, abort
 from flask_login import login_required
-from common.SecurityValidation import html_manipulation_detected
 from domains.request.RequestRepository import RequestRepository
 from domains.user.UserRepository import UserRepository
 from mappers.ApproveHolidayPageMapper import ApproveHolidayPageMapper
@@ -32,8 +31,6 @@ def approve_holiday():
         if (str(session["refresh_page"])).upper() == "YES" or request.method == "GET":
             page_data = approve_holiday_page_mapper.map_initial_page_data()
             session["refresh_page"] = "no"
-        elif html_manipulation_detected():
-            page_data = approve_holiday_page_mapper.map_error()
         else:
             match request.form["form name"]:
                 case "user selection":

@@ -8,6 +8,7 @@ from domains.project.ProjectRepositoryInterface import IProjectRepository
 from domains.request.RequestRepositoryInterface import IRequestRepository
 from domains.user.UserRepositoryInterface import IUserRepository
 from mappers.BaseMapper import BaseMapper
+from common.Logging import write_log
 
 
 class EditProfilePageMapper(BaseMapper):
@@ -46,7 +47,6 @@ class EditProfilePageMapper(BaseMapper):
 
     def map_select_user(self) -> EditProfilePageData:
         employee_list = self.user_repository.get_all_users()
-
         user_details = self.user_repository.get_public_user_details(int(request.form["filter"]))
 
         manager_account_details = self.get_account_and_manager_details(user_details.user_id)
@@ -76,6 +76,7 @@ class EditProfilePageMapper(BaseMapper):
         # Admin may be deleting another admin or manager's account (in which case there is no manager list).
         # Determine manager value based on what is selected in the user selection filter.
         manager_account_details = self.get_account_and_manager_details(user_id)
+        admin_details = self.user_repository.get_public_user_details(int(session["_user_id"]))
 
         manager_list = [] if manager_account_details.account_type != 'basic' \
             else self.user_repository.get_user_type_details(UserType.manager)
@@ -120,6 +121,7 @@ class EditProfilePageMapper(BaseMapper):
             
             state = State.Success
             message = f"You successfully deleted the account with username: {user_name}."
+            write_log(admin_details.user_name, "Account Deleted", f"Account with username: {user_name} was deleted")
             button_presses = 0
             # When deleted, view will revert back to user who is an admin - make sure manager list
             # is empty, so it is not displayed on screen
@@ -150,6 +152,7 @@ class EditProfilePageMapper(BaseMapper):
         # Admin may be deleting another admin or manager's account (in which case there is no manager list).
         # Determine manager value based on what is selected in the user selection filter.
         manager_account_details = self.get_account_and_manager_details(user_id)
+        admin_details = self.user_repository.get_public_user_details(int(session["_user_id"]))
 
         manager_list = [] if manager_account_details.account_type != 'basic' \
             else self.user_repository.get_user_type_details(UserType.manager)
@@ -178,6 +181,7 @@ class EditProfilePageMapper(BaseMapper):
 
             state = State.Success
             message = f"You have approved the ADMIN account with username: {user_name}."
+            write_log(admin_details.user_name, "Admin Approved", f"Admin account with username: {user_name} has been approved")
             button_presses = 0
             # When approved, view will revert back to user who is an admin - make sure manager list
             # is empty, so it is not displayed on screen

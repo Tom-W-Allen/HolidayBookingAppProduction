@@ -4,6 +4,7 @@ from common.enums.State import State
 from domains.user.UserRepositoryInterface import IUserRepository
 from mappers.BaseMapper import BaseMapper
 from common.EmailFunctions import get_email_authentication_details, send_email
+from common.Logging import write_log
 import string
 import random
 import datetime
@@ -31,7 +32,7 @@ class ForgottenPasswordMapper(BaseMapper):
 
         else:
             user_id = self.user_repository.get_user_id_from_email(request.form["Registered Password"])
-
+            user_details = self.user_repository.get_public_user_details(user_id)
             if user_id is None:
                 pass # Do not give indication whether an account exists
             else:
@@ -57,7 +58,7 @@ class ForgottenPasswordMapper(BaseMapper):
                 expiry_date_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
                 expiry_date = f"{expiry_date_time.year}-{expiry_date_time.month}-{expiry_date_time.day}"
                 expiry_time = f"{expiry_date_time.hour}:{expiry_date_time.minute}:{expiry_date_time.second}"
-
+                write_log(user_details.user_name, "Reset Email", f"Account with username: {user_details.user_name} requested a password reset email")
                 self.user_repository.update_reset_expiry(expiry_date, expiry_time, int(user_id))
 
                 successful_request = True
