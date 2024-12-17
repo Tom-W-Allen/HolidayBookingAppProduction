@@ -10,6 +10,7 @@ from common.enums.State import State
 from datetime import datetime
 from persistence.Database import Database
 from common.DateFunctions import format_database_date
+from common.EmailFunctions import validate_email_address
 import hashlib
 import random
 import string
@@ -199,6 +200,26 @@ class UserRepository(IUserRepository):
                              details[0][1],
                              role,
                              details[0][3])
+
+    def validate_email(self, email: str) -> SignupValidation:
+
+        state = State.Success
+        message = None
+        email_check = self._database.query_database("SELECT * FROM users WHERE email_address = ?",
+                                                    arguments=[str(email)],
+                                                    limit=1)
+
+        if len(email_check) > 0:
+            state = State.Warning
+            message = "An account already exists with this email address."
+
+        # Accept emails in the format of [something]@[something].[something]
+        elif not validate_email_address(email):
+            state = State.Warning
+            message = "Unrecognised email format"
+
+        return SignupValidation(state, message)
+
 
     def check_username_exists(self, user_name: str) -> bool:
 
