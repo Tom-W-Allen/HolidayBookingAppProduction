@@ -41,7 +41,7 @@ def validate_email_address(email):
     split_address = email.split("@")
     split_by_dot = split_address[1].split(".")
 
-    if len(split_by_dot) != 2:
+    if len(split_by_dot) < 2 or len(split_by_dot) > 3:
         return False
 
     return True
