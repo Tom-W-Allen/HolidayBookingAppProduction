@@ -143,7 +143,8 @@ class LoginPageMapper:
                                           email)
 
             message = "Your account has been set up, please log in."
-            write_log(request.form["User Name"], "New User", f"An account with username: {request.form["User Name"]} has been created")
+            username = request.form["User Name"]
+            write_log(request.form["User Name"], "New User", f"An account with username: {username} has been created")
 
         return LoginPageData(None,
                              state,
