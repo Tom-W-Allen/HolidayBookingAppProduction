@@ -8,6 +8,7 @@ from flask import request, session
 from common.enums.State import *
 from flask_login import login_user
 from domains.user.models.UserSession import UserSession
+from common.Logging import write_log
 import hashlib
 
 from common.enums.State import State
@@ -87,6 +88,9 @@ class LoginPageMapper:
             current_attempts = self.user_repository.get_password_attempts(user_details.user_id)
             self.user_repository.update_password_attempts(user_details.user_id, current_attempts + 1)
 
+            if current_attempts + 1 >= 3:
+                write_log(user_details.user_name, "Account Locked", f"Account with username: {user_details.user_name} was locked after 3 unsuccessful login attempts")
+
         return LoginPageData(login_redirect,
                              state,
                              message,
@@ -139,6 +143,7 @@ class LoginPageMapper:
                                           email)
 
             message = "Your account has been set up, please log in."
+            write_log(request.form["User Name"], "New User", f"An account with username: {request.form["User Name"]} has been created")
 
         return LoginPageData(None,
                              state,
