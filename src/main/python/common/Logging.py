@@ -32,6 +32,10 @@ def get_logs():
     current_directory = path.dirname(__file__).split("\\")
     file_path = ("\\".join(current_directory[:len(current_directory) - 1])) + "\\Logs\\logs.txt"
 
+    if not path.isfile(file_path):
+        with open(file_path, "w"): # set up blank log file if one does not exist
+            pass
+
     lines = []
     decrypted_lines = []
     with open(file_path, "r") as file:
