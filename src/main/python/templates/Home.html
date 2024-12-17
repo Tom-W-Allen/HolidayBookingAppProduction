@@ -59,6 +59,7 @@
         {% block content %}
             <h1 class="title">Welcome back, {{user_details.first_name}}</h1>
             {% if account_type == "admin" %}
+            <a href="{{ url_for('log_data_blueprint.view_logs') }}">View Logs</a>
             <div class="home_page_flex">
                 <div class="flex_item">
                     <p class="home_title">Total Projects</p>
