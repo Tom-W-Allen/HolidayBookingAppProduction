@@ -1,4 +1,18 @@
 {% extends "Home.html" %}
 {% block content %}
-<h1>Log History</h1>
+<h1 class="title">Log History</h1>
+<div class="table_header">
+    <h2>User</h2>
+    <h2>Event</h2>
+    <h2>Message</h2>
+    <h2>Time</h2>
+</div>
+{% for log in logs%}
+<div class="table_header">
+    <p>{{log.user}}</p>
+    <p>{{log.event}}</p>
+    <p>{{log.message}}</p>
+    <p>{{log.time}}</p>
+</div>
+{% endfor %}
 {% endblock %}
