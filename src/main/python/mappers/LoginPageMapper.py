@@ -150,3 +150,10 @@ class LoginPageMapper:
                              state,
                              message,
                              False)
+
+    def map_error(self):
+        message = "Something went wrong and your request could not be processed. Please refresh and try again."
+        return LoginPageData(None,
+                             State.Error,
+                             message,
+                             False)
