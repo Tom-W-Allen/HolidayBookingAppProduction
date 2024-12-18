@@ -72,5 +72,9 @@
     <div class="confirmation">
         <p>{{ message }}</p>
     </div>
+{% elif state == 'State.Error' %}
+    <div class="error">
+        <p>{{ message }}</p>
+    </div>
 {% endif %}
 </html>

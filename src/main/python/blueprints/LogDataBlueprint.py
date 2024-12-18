@@ -24,14 +24,22 @@ def view_logs():
     if user_details.account_type != "admin":
         abort(404)
 
-    if request.method == "GET":
-        page_data = logging_mapper.map_initial_page_data()
-    else:
-        page_data = logging_mapper.map_logout()
+    try:
+        if request.method == "POST" and request.form["form name"] == "log out":
+            page_data = logging_mapper.map_logout()
+        elif request.method == "GET":
+            session["refresh_page"] = "no"
+            page_data = logging_mapper.map_initial_page_data()
+        else:
+            page_data = logging_mapper.map_error()
+    except Exception as ex:
+        page_data = logging_mapper.map_error()
 
     if page_data.redirect is not None:
         return redirect(page_data.redirect)
 
     return render_template("LogData.html",
                            logs=page_data.logs,
-                           logout_presses=page_data.logout_presses)
+                           logout_presses=page_data.logout_presses,
+                           state=str(page_data.state),
+                           message=page_data.message)

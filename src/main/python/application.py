@@ -60,18 +60,21 @@ def user_loader(user_id):
 
 @application.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "GET":
-        page_data = login_page_mapper.map_initial_page_data()
-    else:
-        match request.form["form name"]:
-            case "login":
-                page_data = login_page_mapper.map_login()
-            case "sign-up":
-                page_data = login_page_mapper.map_sign_up()
-            case "sign-up details":
-                page_data = login_page_mapper.map_sign_up_details()
-            case _:
-                page_data = login_page_mapper.map_initial_page_data()
+    try:
+        if request.method == "GET":
+            page_data = login_page_mapper.map_initial_page_data()
+        else:
+            match request.form["form name"]:
+                case "login":
+                    page_data = login_page_mapper.map_login()
+                case "sign-up":
+                    page_data = login_page_mapper.map_sign_up()
+                case "sign-up details":
+                    page_data = login_page_mapper.map_sign_up_details()
+                case _:
+                    page_data = login_page_mapper.map_error()
+    except Exception as ex:
+        page_data = login_page_mapper.map_error()
 
     if page_data.redirect is not None:
         return redirect(page_data.redirect)
