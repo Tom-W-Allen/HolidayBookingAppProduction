@@ -207,7 +207,7 @@ class EditProfilePageMapper(BaseMapper):
 
     def map_confirm_changes(self) -> EditProfilePageData:
         employee_list = [] if session["account_type"] != 'admin' else self.user_repository.get_all_users()
-        email = request.form["email"] if self.user_repository.is_postgreSQL() else None
+        email = request.form["email"] if self.user_repository.is_postgreSQL() else ""
         user_id = int(request.form["selected user"])
         state = State.Normal
         message = None
@@ -224,13 +224,14 @@ class EditProfilePageMapper(BaseMapper):
                                   request.form["first name"],
                                   request.form["surname"],
                                   manager_account_details.manager,
-                                  request.form["email"])
+                                  email)
 
         validation = self.user_repository.validate_edit_profile(user_details,
                                                                 request.form["password"],
                                                                 request.form["password confirmation"])
 
-        email_validation = None if email is None else self.user_repository.validate_email(email)
+        current_email = self.user_repository.get_public_user_details(user_id).email
+        email_validation = None if email is None or email == current_email else self.user_repository.validate_email(email)
 
         # Invalid inputs, reset form
         if validation.state == State.Warning:
@@ -240,10 +241,11 @@ class EditProfilePageMapper(BaseMapper):
             state = validation.state
             message = validation.message
         elif email_validation is not None and email_validation.state == State.Warning:
-            message = email_validation.message
-            state = email_validation.state
-            manager = user_details.manager#
+            user_details = self.user_repository.get_public_user_details(user_id)
+            manager = user_details.manager
             approval_required = False
+            state = email_validation.state
+            message = email_validation.message
         else:
             # set manager as 0 if request is for manager or admin
             manager = 0 if "manager" not in request.form.keys() else int(request.form["manager"])
