@@ -278,31 +278,31 @@ class UserRepository(IUserRepository):
                                            str(new_password_and_salt[1]),
                                            str(user.user_id)])
 
-            # Make sure that employees are not automatically reassigned to projects if they switch back to former
-            # manager and reflect manager change in all pending requests.
-            if user.account_type == 'basic' and user.manager != current_details.manager:
+        # Make sure that employees are not automatically reassigned to projects if they switch back to former
+        # manager and reflect manager change in all pending requests.
+        if user.account_type == 'basic' and user.manager != current_details.manager:
 
-                today = datetime.now()
-                string_today = datetime.strftime(today, "%Y-%m-%d")
+            today = datetime.now()
+            string_today = datetime.strftime(today, "%Y-%m-%d")
 
-                manager_id = 0 if current_details.manager is None else current_details.manager
+            manager_id = 0 if current_details.manager is None else current_details.manager
 
-                self._database.query_database("UPDATE employee_projects "
-                                              "SET leave_date = ? "
-                                              "WHERE employee_id = ? AND project_id IN "
-                                              "(SELECT project_id FROM projects WHERE project_lead_id = ?)",
-                                              arguments=
-                                              [string_today,
-                                               str(user.user_id),
-                                               str(manager_id)])
+            self._database.query_database("UPDATE employee_projects "
+                                          "SET leave_date = ? "
+                                          "WHERE employee_id = ? AND project_id IN "
+                                          "(SELECT project_id FROM projects WHERE project_lead_id = ?)",
+                                          arguments=
+                                          [string_today,
+                                           str(user.user_id),
+                                           str(manager_id)])
 
-                self._database.query_database("UPDATE requests SET "
-                                              "approver_id = ? "
-                                              "WHERE "
-                                              "employee_id = ? AND request_status = 'pending'",
-                                              arguments=
-                                              [str(user.manager),
-                                               str(user.user_id)])
+            self._database.query_database("UPDATE requests SET "
+                                          "approver_id = ? "
+                                          "WHERE "
+                                          "employee_id = ? AND request_status = 'pending'",
+                                          arguments=
+                                          [str(user.manager),
+                                           str(user.user_id)])
 
     def delete_user(self, user: PublicUser):
         # As the user table has several dependencies, may need to delete records from child tables first
