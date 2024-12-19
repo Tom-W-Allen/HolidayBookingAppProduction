@@ -207,9 +207,10 @@ class EditProfilePageMapper(BaseMapper):
 
     def map_confirm_changes(self) -> EditProfilePageData:
         employee_list = [] if session["account_type"] != 'admin' else self.user_repository.get_all_users()
-
+        email = request.form["email"] if self.user_repository.is_postgreSQL() else None
         user_id = int(request.form["selected user"])
-
+        state = State.Normal
+        message = None
         # Admin may be editing their own account (in which case there is no manager list) or editing on behalf of
         # another user. Determine manager value based on what is selected in the user selection filter.
         manager_account_details = self.get_account_and_manager_details(user_id)
@@ -229,10 +230,19 @@ class EditProfilePageMapper(BaseMapper):
                                                                 request.form["password"],
                                                                 request.form["password confirmation"])
 
+        email_validation = None if email is None else self.user_repository.validate_email(email)
+
         # Invalid inputs, reset form
         if validation.state == State.Warning:
             user_details = self.user_repository.get_public_user_details(user_id)
             manager = user_details.manager
+            approval_required = False
+            state = validation.state
+            message = validation.message
+        elif email_validation is not None and email_validation.state == State.Warning:
+            message = email_validation.message
+            state = email_validation.state
+            manager = user_details.manager#
             approval_required = False
         else:
             # set manager as 0 if request is for manager or admin
@@ -245,8 +255,8 @@ class EditProfilePageMapper(BaseMapper):
 
         admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
 
-        return EditProfilePageData(validation.state,
-                                   validation.message,
+        return EditProfilePageData(state,
+                                   message,
                                    session["account_type"],
                                    user_details.user_id,
                                    employee_list,
