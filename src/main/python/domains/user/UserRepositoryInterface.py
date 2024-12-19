@@ -32,7 +32,10 @@ class IUserRepository:
     def get_expiry_time(self, reset_id: str) -> Optional[datetime]:
         pass
 
-    def update_password_by_reset_id(self, reset_id: str, password: str):
+    def update_password_by_reset_id(self, reset_id: str, password: str, salt: str):
+        pass
+
+    def validate_email(self, email: str) -> SignupValidation:
         pass
 
     def get_email_by_id(self, reset_id: str) -> str:
@@ -99,4 +102,7 @@ class IUserRepository:
         pass
 
     def get_admin_approved(self, user_id: int) -> str:
+        pass
+
+    def get_user_id_by_reset_id(self, reset_id: str) -> int:
         pass

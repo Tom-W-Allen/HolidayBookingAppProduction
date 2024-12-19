@@ -10,6 +10,7 @@ from common.enums.State import State
 from datetime import datetime
 from persistence.Database import Database
 from common.DateFunctions import format_database_date
+from common.EmailFunctions import validate_email_address
 import hashlib
 import random
 import string
@@ -74,10 +75,10 @@ class UserRepository(IUserRepository):
 
         return None if len(email) < 1 else email[0][0]
 
-    def update_password_by_reset_id(self, reset_id: str, password: str):
+    def update_password_by_reset_id(self, reset_id: str, password: str, salt: str):
 
-        self._database.query_database("UPDATE users SET user_password = ? WHERE reset_identifier = ?",
-                                      arguments=[password, reset_id])
+        self._database.query_database("UPDATE users SET user_password = ?, salt = ? WHERE reset_identifier = ?",
+                                      arguments=[password, salt, reset_id])
 
     def add_user(self, username: str, password: str, salt: str, account_type: str, first_name: str,
                  surname: str, holidays: int, manager: Optional[int], email: Optional[str]):
@@ -200,11 +201,38 @@ class UserRepository(IUserRepository):
                              role,
                              details[0][3])
 
+    def validate_email(self, email: str) -> SignupValidation:
+
+        state = State.Success
+        message = None
+        email_check = self._database.query_database("SELECT * FROM users WHERE email_address = ?",
+                                                    arguments=[str(email)],
+                                                    limit=1)
+
+        if len(email_check) > 0:
+            state = State.Warning
+            message = "An account already exists with this email address."
+
+        # Accept emails in the format of [something]@[something].[something]
+        elif not validate_email_address(email):
+            state = State.Warning
+            message = "Unrecognised email format"
+
+        return SignupValidation(state, message)
+
+
     def check_username_exists(self, user_name: str) -> bool:
 
         user_name = self._database.query_database("SELECT user_name FROM users WHERE user_name = ?",
                                                   arguments=[str(user_name)])
         return len(user_name) > 0
+
+    def get_user_id_by_reset_id(self, reset_id: str) -> int:
+
+        user_id = self._database.query_database("SELECT user_id FROM users WHERE reset_identifier = ?",
+                                                arguments=[str(reset_id)])
+
+        return int(user_id[0][0])
 
     def update_user(self, user: PublicUser, password_updated: bool = False):
         try:
@@ -250,31 +278,31 @@ class UserRepository(IUserRepository):
                                            str(new_password_and_salt[1]),
                                            str(user.user_id)])
 
-            # Make sure that employees are not automatically reassigned to projects if they switch back to former
-            # manager and reflect manager change in all pending requests.
-            if user.account_type == 'basic' and user.manager != current_details.manager:
+        # Make sure that employees are not automatically reassigned to projects if they switch back to former
+        # manager and reflect manager change in all pending requests.
+        if user.account_type == 'basic' and user.manager != current_details.manager:
 
-                today = datetime.now()
-                string_today = datetime.strftime(today, "%Y-%m-%d")
+            today = datetime.now()
+            string_today = datetime.strftime(today, "%Y-%m-%d")
 
-                manager_id = 0 if current_details.manager is None else current_details.manager
+            manager_id = 0 if current_details.manager is None else current_details.manager
 
-                self._database.query_database("UPDATE employee_projects "
-                                              "SET leave_date = ? "
-                                              "WHERE employee_id = ? AND project_id IN "
-                                              "(SELECT project_id FROM projects WHERE project_lead_id = ?)",
-                                              arguments=
-                                              [string_today,
-                                               str(user.user_id),
-                                               str(manager_id)])
+            self._database.query_database("UPDATE employee_projects "
+                                          "SET leave_date = ? "
+                                          "WHERE employee_id = ? AND project_id IN "
+                                          "(SELECT project_id FROM projects WHERE project_lead_id = ?)",
+                                          arguments=
+                                          [string_today,
+                                           str(user.user_id),
+                                           str(manager_id)])
 
-                self._database.query_database("UPDATE requests SET "
-                                              "approver_id = ? "
-                                              "WHERE "
-                                              "employee_id = ? AND request_status = 'pending'",
-                                              arguments=
-                                              [str(user.manager),
-                                               str(user.user_id)])
+            self._database.query_database("UPDATE requests SET "
+                                          "approver_id = ? "
+                                          "WHERE "
+                                          "employee_id = ? AND request_status = 'pending'",
+                                          arguments=
+                                          [str(user.manager),
+                                           str(user.user_id)])
 
     def delete_user(self, user: PublicUser):
         # As the user table has several dependencies, may need to delete records from child tables first

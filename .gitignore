@@ -169,3 +169,4 @@ cython_debug/
 
 # Prevent committing EB Deployment folder
 *.zip
+logs.txt

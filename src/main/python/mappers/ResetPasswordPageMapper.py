@@ -3,7 +3,10 @@ from common.enums.State import State
 from domains.user.UserRepositoryInterface import IUserRepository
 from mappers.BaseMapper import BaseMapper
 from blueprints.models.ResetPasswordPageData import ResetPasswordPageData
+from common.Logging import write_log
 import hashlib
+import random
+import string
 
 class ResetPasswordPageMapper(BaseMapper):
     def __init__(self, user_repository: IUserRepository,):
@@ -17,6 +20,8 @@ class ResetPasswordPageMapper(BaseMapper):
         # Does email match id?
         expected_email = self.user_repository.get_email_by_id(reset_id)
         actual_email = request.form["email address"]
+        user_id = self.user_repository.get_user_id_by_reset_id(reset_id)
+        user_details = self.user_repository.get_public_user_details(user_id)
 
         if expected_email != actual_email:
             state = State.Warning
@@ -34,14 +39,18 @@ class ResetPasswordPageMapper(BaseMapper):
                 # Passwords need to be stored in database as hash digests to maintain security. Therefore, need to convert
                 # the password provided by the user to bytes so that hashlib's sha256 method can get
                 # its hash digest (Python, 2024a; W3 Schools, 2024).
-                bytes_password = hashlib.sha256(password.encode())
+                salt = ''.join(random.choices(string.ascii_letters, k=10))
+                salted_password = password + salt
+
+                bytes_password = hashlib.sha256(salted_password.encode())
 
                 # Use hexidigest to retrieve the hash digest of the password
                 hash_digest = bytes_password.hexdigest()
 
-                self.user_repository.update_password_by_reset_id(reset_id, hash_digest)
+                self.user_repository.update_password_by_reset_id(reset_id, hash_digest, salt)
                 self.user_repository.clear_expiry_data(reset_id)
-
+                self.user_repository.update_password_attempts(user_id, 0)
+                write_log(user_details.user_name, "Password Reset", f"Account with username: {user_details.user_name} used an email link to reset its password")
                 state = State.Success
                 message = "Thank you, your password has been changed"
 

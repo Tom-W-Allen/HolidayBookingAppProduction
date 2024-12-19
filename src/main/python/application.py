@@ -1,7 +1,7 @@
 from os import path, getenv
 from waitress import serve
 from flask_wtf.csrf import CSRFProtect
-import urllib.request
+import requests
 
 from flask import Flask, render_template, request, redirect, session
 from flask_login import LoginManager
@@ -22,6 +22,7 @@ from blueprints.ProjectReviewBlueprint import project_review_blueprint
 from blueprints.EditProfileBlueprint import edit_profile_blueprint
 from blueprints.ForgottenPasswordBlueprint import forgotten_password_blueprint
 from blueprints.ResetPasswordBlueprint import reset_password_blueprint
+from blueprints.LogDataBlueprint import log_data_blueprint
 
 # login_manager object set up in accordance with Flask-Login (2024) documentation.
 login_manager = LoginManager()
@@ -37,6 +38,7 @@ application.register_blueprint(project_review_blueprint)
 application.register_blueprint(edit_profile_blueprint)
 application.register_blueprint(forgotten_password_blueprint)
 application.register_blueprint(reset_password_blueprint)
+application.register_blueprint(log_data_blueprint)
 
 login_manager.init_app(application)
 login_manager.login_view = 'login'
@@ -58,18 +60,21 @@ def user_loader(user_id):
 
 @application.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "GET":
-        page_data = login_page_mapper.map_initial_page_data()
-    else:
-        match request.form["form name"]:
-            case "login":
-                page_data = login_page_mapper.map_login()
-            case "sign-up":
-                page_data = login_page_mapper.map_sign_up()
-            case "sign-up details":
-                page_data = login_page_mapper.map_sign_up_details()
-            case _:
-                page_data = login_page_mapper.map_initial_page_data()
+    try:
+        if request.method == "GET":
+            page_data = login_page_mapper.map_initial_page_data()
+        else:
+            match request.form["form name"]:
+                case "login":
+                    page_data = login_page_mapper.map_login()
+                case "sign-up":
+                    page_data = login_page_mapper.map_sign_up()
+                case "sign-up details":
+                    page_data = login_page_mapper.map_sign_up_details()
+                case _:
+                    page_data = login_page_mapper.map_error()
+    except Exception as ex:
+        page_data = login_page_mapper.map_error()
 
     if page_data.redirect is not None:
         return redirect(page_data.redirect)
@@ -91,7 +96,7 @@ if __name__ == '__main__':
 
         # Call database API on redeployment, make sure database is set up and populated if not already
         try:
-            urllib.request.urlopen(f"{database_service}/UpdateDatabase")
+            requests.get(f"{database_service}/UpdateDatabase", timeout=10)
         except:
             pass
 

@@ -8,6 +8,7 @@ from domains.project.ProjectRepositoryInterface import IProjectRepository
 from domains.request.RequestRepositoryInterface import IRequestRepository
 from domains.user.UserRepositoryInterface import IUserRepository
 from mappers.BaseMapper import BaseMapper
+from common.Logging import write_log
 
 
 class EditProfilePageMapper(BaseMapper):
@@ -46,7 +47,6 @@ class EditProfilePageMapper(BaseMapper):
 
     def map_select_user(self) -> EditProfilePageData:
         employee_list = self.user_repository.get_all_users()
-
         user_details = self.user_repository.get_public_user_details(int(request.form["filter"]))
 
         manager_account_details = self.get_account_and_manager_details(user_details.user_id)
@@ -76,6 +76,7 @@ class EditProfilePageMapper(BaseMapper):
         # Admin may be deleting another admin or manager's account (in which case there is no manager list).
         # Determine manager value based on what is selected in the user selection filter.
         manager_account_details = self.get_account_and_manager_details(user_id)
+        admin_details = self.user_repository.get_public_user_details(int(session["_user_id"]))
 
         manager_list = [] if manager_account_details.account_type != 'basic' \
             else self.user_repository.get_user_type_details(UserType.manager)
@@ -120,6 +121,7 @@ class EditProfilePageMapper(BaseMapper):
             
             state = State.Success
             message = f"You successfully deleted the account with username: {user_name}."
+            write_log(admin_details.user_name, "Account Deleted", f"Account with username: {user_name} was deleted")
             button_presses = 0
             # When deleted, view will revert back to user who is an admin - make sure manager list
             # is empty, so it is not displayed on screen
@@ -150,6 +152,7 @@ class EditProfilePageMapper(BaseMapper):
         # Admin may be deleting another admin or manager's account (in which case there is no manager list).
         # Determine manager value based on what is selected in the user selection filter.
         manager_account_details = self.get_account_and_manager_details(user_id)
+        admin_details = self.user_repository.get_public_user_details(int(session["_user_id"]))
 
         manager_list = [] if manager_account_details.account_type != 'basic' \
             else self.user_repository.get_user_type_details(UserType.manager)
@@ -178,6 +181,7 @@ class EditProfilePageMapper(BaseMapper):
 
             state = State.Success
             message = f"You have approved the ADMIN account with username: {user_name}."
+            write_log(admin_details.user_name, "Admin Approved", f"Admin account with username: {user_name} has been approved")
             button_presses = 0
             # When approved, view will revert back to user who is an admin - make sure manager list
             # is empty, so it is not displayed on screen
@@ -203,9 +207,10 @@ class EditProfilePageMapper(BaseMapper):
 
     def map_confirm_changes(self) -> EditProfilePageData:
         employee_list = [] if session["account_type"] != 'admin' else self.user_repository.get_all_users()
-
+        email = request.form["email"] if self.user_repository.is_postgreSQL() else ""
         user_id = int(request.form["selected user"])
-
+        state = State.Normal
+        message = None
         # Admin may be editing their own account (in which case there is no manager list) or editing on behalf of
         # another user. Determine manager value based on what is selected in the user selection filter.
         manager_account_details = self.get_account_and_manager_details(user_id)
@@ -219,17 +224,28 @@ class EditProfilePageMapper(BaseMapper):
                                   request.form["first name"],
                                   request.form["surname"],
                                   manager_account_details.manager,
-                                  request.form["email"])
+                                  email)
 
         validation = self.user_repository.validate_edit_profile(user_details,
                                                                 request.form["password"],
                                                                 request.form["password confirmation"])
+
+        current_email = self.user_repository.get_public_user_details(user_id).email
+        email_validation = None if email == "" or email == current_email else self.user_repository.validate_email(email)
 
         # Invalid inputs, reset form
         if validation.state == State.Warning:
             user_details = self.user_repository.get_public_user_details(user_id)
             manager = user_details.manager
             approval_required = False
+            state = validation.state
+            message = validation.message
+        elif email_validation is not None and email_validation.state == State.Warning:
+            user_details = self.user_repository.get_public_user_details(user_id)
+            manager = user_details.manager
+            approval_required = False
+            state = email_validation.state
+            message = email_validation.message
         else:
             # set manager as 0 if request is for manager or admin
             manager = 0 if "manager" not in request.form.keys() else int(request.form["manager"])
@@ -241,8 +257,8 @@ class EditProfilePageMapper(BaseMapper):
 
         admin_approved = self.user_repository.get_admin_approved(user_details.user_id)
 
-        return EditProfilePageData(validation.state,
-                                   validation.message,
+        return EditProfilePageData(state,
+                                   message,
                                    session["account_type"],
                                    user_details.user_id,
                                    employee_list,
@@ -279,6 +295,7 @@ class EditProfilePageMapper(BaseMapper):
             password_changed = self.user_repository.verify_password_change(user_id)
             self.user_repository.update_user(form_data, password_changed)
             message = "Your account details have been successfully updated"
+            self.user_repository.update_password_attempts(user_id, 0)
             state = State.Success
 
         # Reset form details
