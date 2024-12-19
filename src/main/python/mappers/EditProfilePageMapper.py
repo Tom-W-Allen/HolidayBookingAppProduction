@@ -231,7 +231,7 @@ class EditProfilePageMapper(BaseMapper):
                                                                 request.form["password confirmation"])
 
         current_email = self.user_repository.get_public_user_details(user_id).email
-        email_validation = None if email is None or email == current_email else self.user_repository.validate_email(email)
+        email_validation = None if email == "" or email == current_email else self.user_repository.validate_email(email)
 
         # Invalid inputs, reset form
         if validation.state == State.Warning:
